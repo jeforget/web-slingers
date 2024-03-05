@@ -1,4 +1,5 @@
 # Repo Layout:
+This new layout should allow us to add without overwriting each other's files.
 
 # Backend
 app.py is the main backend file, essentially our version of server.py. The util folder is where we'll put supporting backend files. 
