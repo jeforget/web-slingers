@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<div class="title">
+    <h1 style="text-align: center">Home</h1>
+    <h2 style="text-align: center">Choose a page</h2>
+</div>
+
+<div style="text-align: center";class="content">
+
+    <a href="/page1">Page 1</a>
+    <br>
+    <a href="/page2">Page 2</a>
+    <br>
+    <a href="/page3">Page 3</a>
+    <br>
+    <a href="/page4">Page 4</a>
+    <br>
+
+</div>
+
+<div style="text-align: center"; class="image_div">
+    <br>
+    <image src="{{ url_for('static', filename='images/nova_small.png')}}"/>
+
+    <p id="nova">Nova</p>
+<script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
+</div>
+{% endblock %} 
