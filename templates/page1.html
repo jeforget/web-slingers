@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<div class="title">
+    <h1 style="text-align: center">Page 1</h1>
+</div>
+
+<div style="text-align: center" class="content">
+    <h2>Welcome to Page 1!</h2>
+    <p>Now you are in page 1!</p>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</div>
+
+<div style="text-align: center" class="image_div">
+    <img src="{{ url_for('static', filename='images/crow.png') }}" alt="Crow Image">
+</div>
+
+<script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
+{% endblock %}
