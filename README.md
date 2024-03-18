@@ -1,3 +1,6 @@
+# DO NOT PUSH TO OR MODIFY MAIN
+I wanted to go over this in the meeting but to avoid us overwriting each other's stuff you need to **CREATE A BRANCH OFF OF DEVELOP** and work from there. Then once you're done, pull from develop, then merge with develop! We should **NOT** be touching main until we're done and have the bugs worked out!
+
 # Repo Layout:
 This new layout should allow us to add without overwriting each other's files.
 
