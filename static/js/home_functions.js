@@ -1,1 +1,1 @@
-document.getElementById("nova").innerHTML += "<br/>Nova but added by JavaScript";
+document.getElementById("nova").innerHTML += "<br/>Nova is a leopard gecko!";
