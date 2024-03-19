@@ -4,5 +4,5 @@ WORKDIR /root
 COPY . .
 RUN pip install flask
 RUN pip install --no-cache-dir -r requirements.txt
-EXPOSE 5000
+EXPOSE 8080
 CMD ["python3", "-u", "app.py", "flask"]

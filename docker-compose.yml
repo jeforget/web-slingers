@@ -10,4 +10,4 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: pass
     ports:
-      - "5000:5000"
+      - "8080:5000"
