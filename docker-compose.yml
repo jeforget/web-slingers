@@ -1,6 +1,11 @@
-version: '3'
+version: '3.3'
 services:
-  web:
+  mongo:
+    image: mongo:4.2.5
+  app:
     build: .
+    environment:
+      WAIT_HOSTS: mongo:27017
+      SECRET_KEY: PLEASE ADD SECRET_KEY HERE!
     ports:
-      - "8080:5000"
+      - '8080:5000'
