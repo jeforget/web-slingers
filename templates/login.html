@@ -12,7 +12,7 @@
 </div>
 
 
-    <form action="/page2" method="post" enctype="application/x-www-form-urlencoded">
+    <form action="{{ url_for('login') }}" method="post" enctype="application/x-www-form-urlencoded">
         <label>Username:
             <input id="login-form-username" type="text" name="username_login" value="{{ request.form.username }}"/>
         </label>
@@ -24,7 +24,7 @@
     </form>
 
 
-    <form action="/logout" method ="post">
+    <form action="{{ url_for('logout') }}" method ="post">
         <input type="submit"  value="LogOut">
     </form>
 

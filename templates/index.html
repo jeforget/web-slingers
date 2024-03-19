@@ -13,12 +13,20 @@
     <h2 style="text-align: center">This page is currently under development.</h2>
     <h3 style="text-align: center">For now, enjoy this picture of Nova!</h3>
 </div>
-
+<div style="text-align: right"; class="header_buttons">
+    <a href="/register">Register</a>
+    <a href="/login">Login</a>
+</div>
+<br>
+<div class="row">
+    Logged in : <strong class="gfg">  {{session.username}} Not Logged In </strong>| <a href="{{ url_for('logout') }}"> Logout</a>
+</div>
+<br>
 <div style="text-align: center";class="content">
 
     <a href="/page1">Register</a>
     <br>
-    <a href="/page2">Login</a>
+    <a href="/login">Login</a>
     <br>
     <a href="/page3">Post</a>
     <br>
