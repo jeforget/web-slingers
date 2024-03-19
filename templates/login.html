@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+<title>Login</title>
+
+{% endblock %}
+
+{% block body %}
+<div class="title">
+    <h1 style="text-align: center">Login to Web Slingers</h1>
+</div>
+
+
+    <form action="/page2" method="post" enctype="application/x-www-form-urlencoded">
+        <label>Username:
+            <input id="login-form-username" type="text" name="username_login" value="{{ request.form.username }}"/>
+        </label>
+        <br/>
+        <label>Password:&nbsp;
+            <input id="login-form-pass" type="password" name="password_login" value="{{ request.form.password }}">
+        </label>
+        <input type="submit" value="Login">
+    </form>
+
+
+    <form action="/logout" method ="post">
+        <input type="submit"  value="LogOut">
+    </form>
+
+    <br>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+
+
+<div style="text-align: center" class="image_div">
+    <img src="{{ url_for('static', filename='images/crow.png') }}" alt="Crow Image">
+</div>
+
+<script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
+{% endblock %}
