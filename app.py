@@ -1,6 +1,13 @@
-from flask import Flask, render_template, url_for, request
-
+from flask import Flask, redirect, render_template, url_for, request, jsonify, make_response
+from pymongo import MongoClient
+import bcrypt
+import secrets
+import hashlib
 app = Flask(__name__)
+
+mongo_client = MongoClient("mongodb://cse312:27017/")
+db = mongo_client["users_database"]
+users_collection = db["users"]
 
 @app.route('/', methods=['POST','GET'])
 def index():
@@ -10,9 +17,32 @@ def index():
 def page1():
     return render_template("page1.html")
 
-@app.route('/page2')
+@app.route('/page2', methods=['POST','GET'])
 def page2():
-    return "Page 2 doesn't exist yet"
+    if request.method == 'POST':
+
+        username = request.form['username_login']
+        password = request.form['password_login']
+        my_data = users_collection.find_one({'username': username}, {"_id": False})
+        if my_data is None:
+            return render_template("login.html", info="Invalid username or password")
+        password = password.encode()
+
+        salt = my_data["salt"]
+        salted_password = bcrypt.hashpw(password, salt)
+        if bcrypt.checkpw(password, my_data["hash_password"]):
+            auth_token = secrets.token_hex(16)
+            hashed_token = hashlib.md5(auth_token.encode()).hexdigest()
+
+            users_collection.update_one({"username": username}, {"$set": {"Auth_token": hashed_token}})
+            response = make_response(redirect(url_for('index')))
+            response.set_cookie("Auth_token", auth_token, httponly=True)
+            return response
+        return render_template("login.html", info="Invalid username or password")
+
+    return render_template("login.html")
+
+
 
 @app.route('/page3')
 def page3():
