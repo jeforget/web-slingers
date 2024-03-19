@@ -2,23 +2,25 @@
 
 {% block head %}
 
+<title>Nova Page</title>
+<link rel="shortcut icon" href="{{ url_for('static', filename='nova_eye.png') }}">
+
 {% endblock %}
 
 {% block body %}
 <div class="title">
-    <h1 style="text-align: center">Home</h1>
-    <h2 style="text-align: center">Choose a page</h2>
+    <h1 style="text-align: center">Welcome!</h1>
+    <h2 style="text-align: center">This page is currently under development.</h2>
+    <h3 style="text-align: center">For now, enjoy this picture of Nova!</h3>
 </div>
 
 <div style="text-align: center";class="content">
 
-    <a href="/page1">Page 1</a>
+    <a href="/page1">Register</a>
     <br>
-    <a href="/page2">Page 2</a>
+    <a href="/page2">Login</a>
     <br>
-    <a href="/page3">Page 3</a>
-    <br>
-    <a href="/page4">Page 4</a>
+    <a href="/page3">Post</a>
     <br>
 
 </div>
@@ -27,7 +29,7 @@
     <br>
     <image src="{{ url_for('static', filename='images/nova_small.png')}}"/>
 
-    <p id="nova">Nova</p>
-<script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
+    <p id="nova">This is Nova!</p>
+    <script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
 </div>
 {% endblock %} 
