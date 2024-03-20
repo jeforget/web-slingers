@@ -6,13 +6,23 @@
 
 {% block body %}
     <h1>Registration Page</h1>
-    <form action="{{ url_for('register') }}" method="post">
+     {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form id="register-form" action="{{ url_for('register') }}" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br>
+        <label for="password">Retype Password:</label>
+        <input type="password" id="password_2" name="password_2" required><br>
         <input type="submit" value="Register">
     </form>
 {% endblock %}
