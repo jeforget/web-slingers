@@ -16,11 +16,12 @@
 <div style="text-align: right"; class="header_buttons">
     <a href="/register">Register</a>
     <a href="/login">Login</a>
+    <a href="/logout">Logout</a>
 </div>
 <br>
 <div class="row">
 
-    <h1>Welcome, Guest</h1>
+    <h1>Welcome, {{ session["username"] }}</h1>
 
 </div>
 <br>
@@ -31,6 +32,8 @@
     <a href="/register">Register</a>
     <br>
     <a href="/login">Login</a>
+    <br>
+    <a href="/logout">Logout</a>
     <br>
     <a href="/page3">Post</a>
     <br>
@@ -44,4 +47,4 @@
     <p id="nova">This is Nova!</p>
     <script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
 </div>
-{% endblock %} 
+{% endblock %}
