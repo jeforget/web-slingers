@@ -20,6 +20,7 @@ db = get_db()
 collection = db['users']
 @app.route('/', methods=['POST','GET'])
 def index():
+    #updated to authentication
     auth = request.cookies.get("Auth_token", None)
     if not auth == None:
         auth = auth.encode()
