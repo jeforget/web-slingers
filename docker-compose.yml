@@ -9,5 +9,7 @@ services:
       MONGO_INITDB_DATABASE: users
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: pass
+  web:
+    build: ..
     ports:
       - "8080:5000"
