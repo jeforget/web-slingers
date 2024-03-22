@@ -1,4 +1,6 @@
-from flask import Flask, redirect, render_template, url_for, request, jsonify, make_response, flash, session, datetime
+from datetime import datetime
+from html import escape
+from flask import Flask, redirect, render_template, url_for, request, jsonify, make_response, flash, session
 from pymongo import MongoClient
 import bcrypt
 import secrets
@@ -9,24 +11,23 @@ app = Flask(__name__)
 
 app.secret_key = '13513ijnijdsuia7safv'
 
+
 # Connect to MongoDB
 def get_db():
     client = MongoClient('mongo')
     db = client['312_database']
-    #collection = db['users']
+    # collection = db['users']
     return db
+
 
 db = get_db()
 collection = db['users']
 posts_collection = db['posts']
 
-def create_post(username, content):
-    post = {"username": username, "content": content, "created_at": datetime.now()}
-    posts_collection.insert_one(post)
 
-@app.route('/', methods=['POST','GET'])
+@app.route('/', methods=['POST', 'GET'])
 def index():
-    #updated to authentication
+    # updated to authentication
     auth = request.cookies.get("Auth_token", None)
     if not auth == None:
         auth = auth.encode()
@@ -47,11 +48,13 @@ def index():
         return render_template("logged_in.html")
     return render_template("index.html")
 
+
 @app.route('/page1')
 def page1():
     return render_template("page1.html")
 
-@app.route('/login', methods=['POST','GET'])
+
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         username = request.form['username_login']
@@ -66,7 +69,6 @@ def login():
         salt = my_data["salt"]
 
         if bcrypt.checkpw(password, my_data["hash_password"]):
-
             auth_token = secrets.token_hex(16)
             hashed_token = hashlib.md5(auth_token.encode()).hexdigest()
             collection.update_one({"username": username}, {"$set": {"Auth_token": hashed_token}})
@@ -81,13 +83,15 @@ def login():
 
     return render_template("login.html")
 
-@app.route('/logout', methods=['POST','GET'])
+
+@app.route('/logout', methods=['POST', 'GET'])
 def logout():
     session["username"] = None
     session.pop("auth", False)
     response = make_response(redirect(url_for("index")))
     response.delete_cookie("Auth_token")
     return response
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -123,19 +127,60 @@ def register():
         flash('Registration successful!', 'success')
         return redirect(url_for('index'))
     return render_template('register.html')
-# post page
-@app.route('/page3')
-def page3():
-    return "Page 3 doesn't exist yet"
 
-@app.route('/page4')
-def page4():
-    return "Page 4 doesn't exist yet"
+
+# post page
+@app.route('/page3', methods=['GET'])
+def page3():
+    all_posts = list(posts_collection.find())
+    return render_template("post.html", posts=all_posts)
+
+
+def create_single_post(username, content):
+    post = {"username": username, "content": content, "created_at": datetime.now()}
+    posts_collection.insert_one(post)
+
+
+# @app.route('/create_post', methods=['POST'])
+# def create_post():
+#     if 'username' in session:
+#         content = request.form['content']
+#         # Ensure to escape the content
+#         content = escape(content)
+#         create_single_post(session['username'], content)
+#         flash('Post created successfully!', 'success')
+#     return redirect(url_for('page3'))
+@app.route('/create_post', methods=['POST'])
+def create_post():
+    if 'username' in session:
+        content = request.form.get('content', '')
+        content = escape(content)
+        create_single_post(session['username'], content)
+        flash('Post created successfully!')
+    return redirect(url_for('page3'))
+
+@app.route('/like_post', methods=['POST'])
+def like_post():
+    post_id = request.form.get('post_id')
+    username = session.get('username')
+    return jsonify({'result': 'success'})
+
+
+
+@app.route('/dislike_post', methods=['POST'])
+def dislike_post():
+    post_id = request.form.get('post_id')
+    username = session.get('username')
+    return jsonify({'result': 'success'})
+
+
+
 
 @app.after_request
 def set_response_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

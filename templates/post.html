@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Post Page</title>
+
+{% endblock %}
+
+{% block body %}
+<div class="post-section">
+    <h1>Create a Post</h1>
+    <form action="{{ url_for('create_post') }}" method="post">
+        <textarea name="content" required placeholder="Make your post here!"></textarea>
+        <input type="submit" value="Post">
+    </form>
+    <hr>
+    <h1>Posts</h1>
+    {% for post in posts %}
+        <div class="post">
+            <p><strong>{{ post.username }}</strong> posted:</p>
+            <p>{{ post.content | safe }}</p>
+            <form action="{{ url_for('like_post') }}" method="post">
+                <input type="hidden" name="post_id" value="{{ post._id }}">
+                <button type="submit" name="action" value="like">Like</button>
+            </form>
+            <form action="{{ url_for('dislike_post') }}" method="post">
+                <input type="hidden" name="post_id" value="{{ post._id }}">
+                <button type="submit" name="action" value="dislike">Dislike</button>
+            </form>
+        </div>
+    {% endfor %}
+</div>
+
+<script type="text/javascript">
+
+</script>
+
+{% endblock %}
