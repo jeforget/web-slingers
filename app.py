@@ -2,6 +2,7 @@ from datetime import datetime
 from html import escape
 from flask import Flask, redirect, render_template, url_for, request, jsonify, make_response, flash, session
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 import bcrypt
 import secrets
 import hashlib
@@ -160,20 +161,94 @@ def create_post():
     return redirect(url_for('page3'))
 
 @app.route('/like_post', methods=['POST'])
+
+
+
+#def like_post():
+    # post_id = request.form.get('post_id')
+    #username = session.get('username')
+    #return jsonify({'result': 'success'})
+
+
+
+#@app.route('/dislike_post', methods=['POST'])
+#def dislike_post():
+    #post_id = request.form.get('post_id')
+    #username = session.get('username')
+    #return jsonify({'result': 'success'})
+
+@app.route('/like_post', methods=['POST'])
 def like_post():
     post_id = request.form.get('post_id')
     username = session.get('username')
-    return jsonify({'result': 'success'})
 
+    if not post_id or not username:
+        return jsonify({'result': 'error', 'message': 'Missing post ID or not logged in.'}), 400
+
+    post_id = ObjectId(post_id)  # Convert to ObjectId for MongoDB
+    post = posts_collection.find_one({"_id": post_id})
+
+    if not post:
+        return jsonify({'result': 'error', 'message': 'Post not found.'}), 404
+
+    if username in post.get('liked_by', []):
+        # User has already liked this post
+        return jsonify({'result': 'error', 'message': 'You have already liked this post.'}), 409
+    
+    if username in post.get('disliked_by', []):
+        # User has disliked it before, remove the dislike first
+        posts_collection.update_one(
+            {"_id": post_id},
+            {"$pull": {"disliked_by": username}, "$inc": {"dislikes": -1}}
+        )
+
+    # Add the like
+    update_result = posts_collection.update_one(
+        {"_id": post_id},
+        {"$addToSet": {"liked_by": username}, "$inc": {"likes": 1}}  # $addToSet ensures no duplicates
+    )
+
+    if update_result.modified_count:
+        return jsonify({'result': 'success', 'new_likes': post.get('likes', 0) + 1})
+    else:
+        return jsonify({'result': 'error', 'message': 'Could not like the post.'}), 500
 
 
 @app.route('/dislike_post', methods=['POST'])
 def dislike_post():
     post_id = request.form.get('post_id')
     username = session.get('username')
-    return jsonify({'result': 'success'})
 
+    if not post_id or not username:
+        return jsonify({'result': 'error', 'message': 'Missing post ID or not logged in.'}), 400
 
+    post_id = ObjectId(post_id)  # Convert to ObjectId for MongoDB
+    post = posts_collection.find_one({"_id": post_id})
+
+    if not post:
+        return jsonify({'result': 'error', 'message': 'Post not found.'}), 404
+
+    if username in post.get('disliked_by', []):
+        # User has already disliked this post
+        return jsonify({'result': 'error', 'message': 'You have already disliked this post.'}), 409
+    
+    if username in post.get('liked_by', []):
+        # User has liked it before, remove the like first
+        posts_collection.update_one(
+            {"_id": post_id},
+            {"$pull": {"liked_by": username}, "$inc": {"likes": -1}}
+        )
+
+    # Add the dislike
+    update_result = posts_collection.update_one(
+        {"_id": post_id},
+        {"$addToSet": {"disliked_by": username}, "$inc": {"dislikes": 1}}  # $addToSet ensures no duplicates
+    )
+
+    if update_result.modified_count:
+        return jsonify({'result': 'success', 'new_dislikes': post.get('dislikes', 0) + 1})
+    else:
+        return jsonify({'result': 'error', 'message': 'Could not dislike the post.'}), 500
 
 
 @app.after_request
@@ -184,3 +259,4 @@ def set_response_headers(response):
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
+
