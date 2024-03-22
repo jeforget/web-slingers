@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, url_for, request, jsonify, make_response, flash, session
+from flask import Flask, redirect, render_template, url_for, request, jsonify, make_response, flash, session, datetime
 from pymongo import MongoClient
 import bcrypt
 import secrets
@@ -18,6 +18,12 @@ def get_db():
 
 db = get_db()
 collection = db['users']
+posts_collection = db['posts']
+
+def create_post(username, content):
+    post = {"username": username, "content": content, "created_at": datetime.now()}
+    posts_collection.insert_one(post)
+
 @app.route('/', methods=['POST','GET'])
 def index():
     #updated to authentication
@@ -117,6 +123,7 @@ def register():
         flash('Registration successful!', 'success')
         return redirect(url_for('index'))
     return render_template('register.html')
+# post page
 @app.route('/page3')
 def page3():
     return "Page 3 doesn't exist yet"
