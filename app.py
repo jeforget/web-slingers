@@ -157,7 +157,7 @@ def create_post():
         content = request.form.get('content', '')
         content = escape(content)
         create_single_post(session['username'], content)
-        flash('Post created successfully!')
+        # flash('Post created successfully!')
     return redirect(url_for('page3'))
 
 @app.route('/like_post', methods=['POST'])
@@ -232,7 +232,7 @@ def dislike_post():
     # Add the dislike
     update_result = posts_collection.update_one(
         {"_id": post_id},
-        {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}  # $addToSet ensures no duplicates
+        {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}  # $ensures no more than one per person
     )
 
     if update_result.modified_count:

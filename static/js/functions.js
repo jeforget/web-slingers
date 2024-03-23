@@ -6,29 +6,36 @@ function handlePost(postId, action) {
     data: {
       post_id: postId
     },
-    success: function(response) {
+    success: function(click_response) {
 
-      if (response.result === 'success') {
+      if (click_response.result === 'success') {
 
-        var newCount = action === 'like' ? response.total_likes : response.total_dislikes;
-        $("#" + action + "-count-" + postId).text(newCount);
+        let Countnum;
+        if (action === 'like') {
+    Countnum = click_response.total_likes;
+} else {
+    Countnum = click_response.total_dislikes;
+}
+
+        const countElementSelector = "#" + action + "-count-" + postId;
+
+
+        $(countElementSelector).text(Countnum);
       } else {
 
-        alert(response.message);
+        alert(click_response.message);
       }
     },
     error: function() {
-
       alert('Don\'t swipe votes');
     }
   });
 }
 
-
 $(document).ready(function() {
 
   $('.like-button').click(function() {
-    var postId = $(this).data('post-id');
+    const postId = $(this).data('post-id');
     handlePost(postId, 'like');
   });
 
