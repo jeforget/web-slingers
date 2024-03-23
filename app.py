@@ -114,6 +114,7 @@ def register():
             flash('Username already exists!', 'error')
             return redirect(url_for('register'))
 
+
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
@@ -153,29 +154,25 @@ def create_single_post(username, content):
 #     return redirect(url_for('page3'))
 @app.route('/create_post', methods=['POST'])
 def create_post():
-    if 'username' in session:
+    if 'username' in session and (not session.get("auth", False) == False):
         content = request.form.get('content', '')
         content = escape(content)
         create_single_post(session['username'], content)
         # flash('Post created successfully!')
     return redirect(url_for('page3'))
 
+
 @app.route('/like_post', methods=['POST'])
+# def like_post():
+# post_id = request.form.get('post_id')
+# username = session.get('username')
+# return jsonify({'result': 'success'})
 
-
-
-#def like_post():
-    # post_id = request.form.get('post_id')
-    #username = session.get('username')
-    #return jsonify({'result': 'success'})
-
-
-
-#@app.route('/dislike_post', methods=['POST'])
-#def dislike_post():
-    #post_id = request.form.get('post_id')
-    #username = session.get('username')
-    #return jsonify({'result': 'success'})
+# @app.route('/dislike_post', methods=['POST'])
+# def dislike_post():
+# post_id = request.form.get('post_id')
+# username = session.get('username')
+# return jsonify({'result': 'success'})
 
 @app.route('/like_post', methods=['POST'])
 def like_post():
@@ -196,7 +193,7 @@ def like_post():
         return jsonify({'message': 'You have already liked this post.'}), 409
 
     # Add the like
-    if username not in post.get('liked',[]):
+    if username not in post.get('liked', []):
         update_result = posts_collection.update_one(
             {"_id": post_id},
             {"$addToSet": {"liked": username}, "$inc": {"likes": 1}}
@@ -205,10 +202,7 @@ def like_post():
     if update_result.modified_count:
         return jsonify({'result': 'success', 'total_likes': post.get('likes', 0) + 1})
     else:
-         return jsonify({'message': 'Could not like the post.'}), 500
-       
- 
-
+        return jsonify({'message': 'Could not like the post.'}), 500
 
 
 @app.route('/dislike_post', methods=['POST'])
@@ -241,7 +235,6 @@ def dislike_post():
         return jsonify({'message': 'Could not dislike the post.'}), 500
 
 
-
 @app.after_request
 def set_response_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -250,4 +243,3 @@ def set_response_headers(response):
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
-
