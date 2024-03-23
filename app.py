@@ -197,10 +197,10 @@ def like_post():
 
     # Add the like
     if username not in post.get('liked',[]):
-       update_result = posts_collection.update_one(
-               {"id": post_id},
-         {"$addToSet": {"liked": username}, "$inc": {"likes": 1}}  # $addToSet ensures no duplicates
-    )
+        update_result = posts_collection.update_one(
+            {"_id": post_id},
+            {"$addToSet": {"liked": username}, "$inc": {"likes": 1}}
+        )
 
     if update_result.modified_count:
         return jsonify({'result': 'success', 'total_likes': post.get('likes', 0) + 1})
@@ -216,10 +216,10 @@ def dislike_post():
     post_id = request.form.get('post_id')
     username = session.get('username')
 
-    if  not username:
-       return jsonify({'message': 'Missing post ID or not logged in.'}), 400
+    if not username:
+        return jsonify({'message': 'Missing post ID or not logged in.'}), 400
 
-    post_id = ObjectId(post_id)  # Convert to ObjectId for MongoDB
+    post_id = ObjectId(post_id)
     post = posts_collection.find_one({"_id": post_id})
 
     if not post:
@@ -228,12 +228,9 @@ def dislike_post():
     if username in post.get('disliked', []):
         # User has already disliked this post
         return jsonify({'message': 'You have already disliked this post.'}), 409
-    
-   
 
     # Add the dislike
-    if username not in post.get('disliked',[]): 
-      update_result = posts_collection.update_one(
+    update_result = posts_collection.update_one(
         {"_id": post_id},
         {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}  # $addToSet ensures no duplicates
     )
@@ -241,7 +238,8 @@ def dislike_post():
     if update_result.modified_count:
         return jsonify({'result': 'success', 'total_dislikes': post.get('dislikes', 0) + 1})
     else:
-        return jsonify({'message': 'Could not dislike the post.'}), 500 
+        return jsonify({'message': 'Could not dislike the post.'}), 500
+
 
 
 @app.after_request

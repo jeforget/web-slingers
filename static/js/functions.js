@@ -1,6 +1,5 @@
+function handlePost(postId, action) {
 
-
-function handlePostInteraction(postId, action) {
   $.ajax({
     type: "POST",
     url: "/" + action + "_post",
@@ -8,28 +7,34 @@ function handlePostInteraction(postId, action) {
       post_id: postId
     },
     success: function(response) {
+
       if (response.result === 'success') {
 
-        $("#"+action+"-count-" + postId).text(action === 'like' ? response.new_likes : response.new_dislikes);
+        var newCount = action === 'like' ? response.total_likes : response.total_dislikes;
+        $("#" + action + "-count-" + postId).text(newCount);
       } else {
+
         alert(response.message);
       }
     },
     error: function() {
-      alert('There was an error processing your request.');
+
+      alert('Don\'t swipe votes');
     }
   });
 }
 
 
 $(document).ready(function() {
+
   $('.like-button').click(function() {
     var postId = $(this).data('post-id');
-    handlePostInteraction(postId, 'like');
+    handlePost(postId, 'like');
   });
+
 
   $('.dislike-button').click(function() {
     var postId = $(this).data('post-id');
-    handlePostInteraction(postId, 'dislike');
+    handlePost(postId, 'dislike');
   });
 });
