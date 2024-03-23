@@ -17,10 +17,10 @@ function handlePost(postId, action) {
     Countnum = click_response.total_dislikes;
 }
 
-        const countElementSelector = "#" + action + "-count-" + postId;
+        const countIdSelector = "#" + action + "-count-" + postId;
 
 
-        $(countElementSelector).text(Countnum);
+        $(countIdSelector).text(Countnum);
       } else {
 
         alert(click_response.message);
