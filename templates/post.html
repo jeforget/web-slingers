@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Post Page</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script src="{{ url_for('static', filename='js/functions.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="post-section">
+    <h1>Say some things</h1>
+    <form action="{{ url_for('create_post') }}" method="post">
+        <textarea name="content" required placeholder="Make your post here!"></textarea>
+        <input type="submit" value="Post">
+    </form>
+    <hr>
+    <h1>Posts</h1>
+    {% for post in posts %}
+        <div class="post" id="post-{{ post._id }}">
+            <p><strong>{{ post.username }}</strong> posted:</p>
+            <p>{{ post.content | safe }}</p>
+            <button class="like-button" data-post-id="{{ post._id }}">Like</button>
+            <span id="like-count-{{ post._id }}">{{ post.likes | default(0) }}</span>
+            <button class="dislike-button" data-post-id="{{ post._id }}">Dislike</button>
+            <span id="dislike-count-{{ post._id }}">{{ post.dislikes | default(0) }}</span>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

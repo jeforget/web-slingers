@@ -1,6 +1,13 @@
 version: '3'
 services:
-  web:
-    build: ..
+  mongo:
+    image: mongo:4.2.5
+  app:
+    build: .
+    environment:
+      WAIT_HOSTS: mongo:27017
+      MONGO_INITDB_DATABASE: users
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: pass
     ports:
       - "8080:5000"
