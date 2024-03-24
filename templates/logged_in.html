@@ -2,47 +2,34 @@
 
 {% block head %}
 
-<title>Nova Page</title>
+<title>PostBoard Home</title>
 <link rel="shortcut icon" href="{{ url_for('static', filename='nova_eye.png') }}">
 
 {% endblock %}
 
 {% block body %}
 <div class="title">
-    <h1 style="text-align: center">Welcome!</h1>
-    <h2 style="text-align: center">This page is currently under development.</h2>
-    <h3 style="text-align: center">For now, enjoy this picture of Nova!</h3>
+    <h1 style="text-align: center">PosterBoard</h1>
+    <h2 style="text-align: center">The place for posting stuff.</h2>
+    <br>
 </div>
-<div style="text-align: right"; class="header_buttons">
-    <a href="/register">Register</a>
-    <a href="/login">Login</a>
+<div style="text-align: center"; class="header_buttons">
     <a href="/logout">Logout</a>
-</div>
-<br>
-<div class="row">
-
-    <h1>Welcome, {{ session["username"] }}</h1>
-
-</div>
-<br>
-<div style="text-align: center";class="content">
-
-    <a href="/page1">Page 1</a>
-    <br>
-    <a href="/register">Register</a>
-    <br>
     <a href="/login">Login</a>
-    <br>
-    <a href="/logout">Logout</a>
-    <br>
     <a href="/page3">Post</a>
-    <br>
+</div>
+<br>
+<div style="text-align: center"; class="row">
+
+    <h1>Welcome back, {{ session["username"] }}</h1>
 
 </div>
+<br>
+
 
 <div style="text-align: center"; class="image_div">
     <br>
-    <image src="{{ url_for('static', filename='images/nova_small.png')}}"/>
+    <image src="{{ url_for('static', filename='images/nova-approved.png')}}"></image>
 
     <p id="nova">This is Nova!</p>
     <script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
