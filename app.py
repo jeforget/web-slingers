@@ -6,12 +6,15 @@ from bson.objectid import ObjectId
 import bcrypt
 import secrets
 import hashlib
+import os
 from helper_func import validate_password
 
 app = Flask(__name__)
 
 app.secret_key = '13513ijnijdsuia7safv'
 
+upload_folder = os.path.join('static', 'profilePics')
+app.config['UPLOAD'] = upload_folder
 
 # Connect to MongoDB
 def get_db():
@@ -89,6 +92,7 @@ def login():
 def logout():
     session["username"] = None
     session.pop("auth", False)
+    session["profile_photo"] = None
     response = make_response(redirect(url_for("index")))
     response.delete_cookie("Auth_token")
     return response
@@ -135,7 +139,7 @@ def register():
 @app.route('/page3', methods=['GET'])
 def page3():
     all_posts = list(posts_collection.find())
-    return render_template("post.html", posts=all_posts)
+    return render_template("post.html", posts=all_posts )
 
 
 def create_single_post(username, content):
@@ -234,6 +238,19 @@ def dislike_post():
     else:
         return jsonify({'message': 'Could not dislike the post.'}), 500
 
+@app.route('/logged_in', methods=['POST'])
+def profile_photo():
+    if request.method == 'POST':
+        username = session.get("username", None)
+        if not username == None:
+            file = request.files["fileToUpload"]
+            filename = username + "profile_photo.jpg"
+            file.save(os.path.join(app.config['UPLOAD'], filename))
+            image = os.path.join(app.config['UPLOAD'], filename)
+            session['profile_photo'] = filename
+            return render_template('logged_in.html', fileToUpload=image)
+        return render_template("index.html")
+    return render_template("logged_in.html")
 
 @app.after_request
 def set_response_headers(response):
