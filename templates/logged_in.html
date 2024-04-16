@@ -8,29 +8,42 @@
 {% endblock %}
 
 {% block body %}
-<div class="title">
-    <h1 style="text-align: center">PostBoard</h1>
-    <h2 style="text-align: center">The place for posting stuff.</h2>
+    <div class="title">
+        <h1 style="text-align: center">PostBoard</h1>
+        <h2 style="text-align: center">The place for posting stuff.</h2>
+        <br>
+    </div>
+    <div style="text-align: center"; class="header_buttons">
+        <a href="/logout">Logout</a>
+        <a href="/page3">Post</a>
+    </div>
     <br>
-</div>
-<div style="text-align: center"; class="header_buttons">
-    <a href="/logout">Logout</a>
-    <a href="/page3">Post</a>
-</div>
-<br>
-<div style="text-align: center"; class="row">
+    <div style="text-align: center"; class="row">
 
-    <h1>Welcome back, {{ session["username"] }}</h1>
+        <h1>Welcome back, {{ session["username"] }}</h1>
 
-</div>
-<br>
-
-
-<div style="text-align: center"; class="image_div">
+    </div>
     <br>
-    <image src="{{ url_for('static', filename='images/nova-approved.png')}}"></image>
+    <form action="{{ url_for('profile_photo') }}" enctype="multipart/form-data" method="POST">
+    <label> To Upload Profile Picture:
+        <input id="profilePhotoUpload" type="file" name="fileToUpload"/>
+    </label>
+        <input type="submit" value="Upload File">
+    </form>
 
-    <p id="nova">This is Nova!</p>
-    <script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
-</div>
+    {% if fileToUpload %}
+    <h2> Your Profile Photo is</h2>
+    <img src="{{ fileToUpload }}">
+    {% else %}
+    <h2> No Profile photo uploaded</h2>
+    {% endif %}
+
+
+    <div style="text-align: center"; class="image_div">
+        <br>
+        <image src="{{ url_for('static', filename='images/nova-approved.png')}}"></image>
+
+        <p id="nova">This is Nova!</p>
+        <script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
+    </div>
 {% endblock %}
