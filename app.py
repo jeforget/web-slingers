@@ -49,6 +49,12 @@ def index():
             response = make_response(render_template("index.html"))
             response.set_cookie("Auth_token", "zero", httponly=True)
             return response
+        #return redirect(url_for('profile_photo'))
+        if not session["profile_photo"] == None:
+            filename = session["profile_photo"]
+            image = os.path.join(app.config['UPLOAD'], filename)
+            session['profile_photo'] = filename
+            return render_template('logged_in.html', fileToUpload=image)
         return render_template("logged_in.html")
     return render_template("index.html")
 
@@ -78,6 +84,7 @@ def login():
             collection.update_one({"username": username}, {"$set": {"Auth_token": hashed_token}})
             session["username"] = username
             session["auth"] = True
+            session["profile_photo"] = None
             response = make_response(redirect(url_for('index')))
             response.set_cookie("Auth_token", auth_token, httponly=True)
 
