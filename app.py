@@ -251,6 +251,12 @@ def register():
 
 # # post page with socket
 # Define WebSockets
+@app.route('/page3', methods=['GET'])
+def page3():
+    all_posts = list(posts_collection.find())
+    return render_template("post.html", posts=all_posts)
+
+
 @socketio.on('connect')
 def handle_connect():
     print('Client is connected')
@@ -331,6 +337,7 @@ def handle_dislike_post(json):
             emit('dislike_updated', {'post_id': post_id, 'new_dislike_count': result}, broadcast=True)
         else:
             emit('error', {'message': result})
+
 
 # # post page with socket
 
