@@ -86,8 +86,7 @@ def login():
             session["auth"] = True
             session["profile_photo"] = None
             response = make_response(redirect(url_for('index')))
-            response.set_cookie("Auth_token", auth_token, httponly=True)
-
+            response.set_cookie("Auth_token", auth_token, httponly=True, max_age=3600)
             return response
 
         return render_template("login.html")
@@ -258,6 +257,8 @@ def profile_photo():
             return render_template('logged_in.html', fileToUpload=image)
         return render_template("index.html")
     return render_template("logged_in.html")
+
+
 
 @app.after_request
 def set_response_headers(response):
