@@ -160,10 +160,9 @@ def create_single_post(username, content):
         "created_at": datetime.now()
     }
     result = posts_collection.insert_one(post_data)
-    post_data['_id'] = str(result.inserted_id)  # 将 MongoDB ObjectId 转换为字符串
+    post_data['_id'] = str(result.inserted_id)
     print(f"Post inserted with ID: {post_data['_id']}")
     return post_data
-
 
 
 @socketio.on('create_post')
@@ -175,6 +174,10 @@ def handle_create_post(data):
         return
     content = escape(data['content'])
     post_data = create_single_post(username, content)
+
+
+    if isinstance(post_data['created_at'], datetime):
+        post_data['created_at'] = post_data['created_at'].isoformat()
 
     emit('post_created', {
         'status': 'success',

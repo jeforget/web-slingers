@@ -14,19 +14,24 @@ $(document).ready(function() {
         }
     });
 
-    socket.on('post_created', function(data) {
-        console.log('post_created event received:', data);
-        if (data.status === 'success') {
-            alert(data.message);
-            if (data.post && data.post._id && data.post.username && data.post.content) {
-                appendNewPost(data.post);
-            } else {
-                console.error('Received post object does not have the required structure:', data.post);
-            }
+   socket.on('post_created', function(data) {
+    console.log('post_created event received:', data);
+    if (data.status === 'success') {
+
+        displayMessage(data.message);
+        if (data.post && data.post._id && data.post.username && data.post.content) {
+            appendNewPost(data.post);
         } else {
-            alert('Error creating post');
+            console.error('Received post object does not have the required structure:', data.post);
         }
-    });
+    } else {
+        alert('Error creating post');
+    }
+});
+
+   function displayMessage(message) {
+    $('#message-container').text(message).fadeIn(500).delay(3000).fadeOut(500);
+}
 
     function appendNewPost(post) {
         console.log('Appending new post:', post);
