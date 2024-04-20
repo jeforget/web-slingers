@@ -43,6 +43,7 @@ $(document).ready(function() {
     var postMessage = `
         <div class="post" id="post-${post._id}">
             <p><strong>${post.username}</strong> posted:</p>
+            <img src="static/profilePics/${post.username}profile_photo.jpg" alt="Profile Picture" style="height: 50px; width: 50px;">
             <p>${post.content}</p>
             <button class="like-button" data-post-id="${post._id}">Like</button>
             <span id="like-count-${post._id}">0</span>
