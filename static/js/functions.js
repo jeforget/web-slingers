@@ -34,30 +34,10 @@ $(document).ready(function() {
 }
 
     function makeNewPost(post) {
-<<<<<<< HEAD
-        console.log(' new post with:', post);
-
-        if (!post || !post._id || !post.username || !post.content) {
-            console.error('Post object is missing some part', post);
-            return;
-        }
-
-        var postMessage = `<div class="post" id="post-${post._id}">
-                            <p><strong>${post.username}</strong> posted:</p>
-                            <img src="static/profilePics/${post.username}profile_photo.jpg" alt="Profile Picture" style="height: 50px; width: 50px;">
-                            <p>${post.content}</p>
-                            <button class="like-button" data-post-id="${post._id}">Like</button>
-                            <span id="like-count-${post._id}">0</span>
-                            <button class="dislike-button" data-post-id="${post._id}">Dislike</button>
-                            <span id="dislike-count-${post._id}">0</span>
-                        </div>`;
-        $('#posts-container').prepend(postMessage);
-=======
     console.log('Creating new post with:', post);
     if (!post || !post._id || !post.username || !post.content) {
         console.error('Post object is missing some essential parts', post);
         return;
->>>>>>> WebSocketInteractions
     }
 
     var postMessage = `
