@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/web-slingers-develop.iml" filepath="$PROJECT_DIR$/.idea/web-slingers-develop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/web-slingers.iml" filepath="$PROJECT_DIR$/.idea/web-slingers.iml" />
     </modules>
   </component>
 </project>
