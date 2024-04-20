@@ -90,7 +90,7 @@ def login():
             session["auth"] = True
             session["profile_photo"] = None
             response = make_response(redirect(url_for('index')))
-            response.set_cookie("Auth_token", auth_token, httponly=True)
+            response.set_cookie("Auth_token", auth_token, httponly=True, max_age=3600)
 
             return response
 
