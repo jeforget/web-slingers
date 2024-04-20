@@ -34,6 +34,7 @@ $(document).ready(function() {
 }
 
     function makeNewPost(post) {
+<<<<<<< HEAD
         console.log(' new post with:', post);
 
         if (!post || !post._id || !post.username || !post.content) {
@@ -51,7 +52,28 @@ $(document).ready(function() {
                             <span id="dislike-count-${post._id}">0</span>
                         </div>`;
         $('#posts-container').prepend(postMessage);
+=======
+    console.log('Creating new post with:', post);
+    if (!post || !post._id || !post.username || !post.content) {
+        console.error('Post object is missing some essential parts', post);
+        return;
+>>>>>>> WebSocketInteractions
     }
+
+    var postMessage = `
+        <div class="post" id="post-${post._id}">
+            <p><strong>${post.username}</strong> posted:</p>
+            <p>${post.content}</p>
+            <button class="like-button" data-post-id="${post._id}">Like</button>
+            <span id="like-count-${post._id}">0</span>
+            <p>Liked by: <span id="like-users-${post._id}"></span></p>
+            <button class="dislike-button" data-post-id="${post._id}">Dislike</button>
+            <span id="dislike-count-${post._id}">0</span>
+            <p>Disliked by: <span id="dislike-users-${post._id}"></span></p>
+        </div>`;
+    $('#posts-container').prepend(postMessage);
+}
+
 
     $('.post-section').on('click', '.like-button, .dislike-button', function() {
         var postId = $(this).data('post-id');
@@ -64,29 +86,52 @@ $(document).ready(function() {
         console.log('WebSocket connected!');
     });
 
+//   socket.on('like_response', function(data) {
+//     console.log('like_response received:', data);
+//     if (data.result === 'success') {
+//
+//         if (data.post && data.post._id) {
+//             $('#like-count-' + data.post._id).text(data.total_likes);
+//         } else {
+//             console.error('Invalid structure for like_response:', data);
+//         }
+//     }
+// });
+//
+
   socket.on('like_response', function(data) {
-    console.log('like_response received:', data);
-    if (data.result === 'success') {
-
-        if (data.post && data.post._id) {
+        if (data.result === 'success') {
             $('#like-count-' + data.post._id).text(data.total_likes);
+            var userList = data.liked_by.join(', ');
+            $('#like-users-' + data.post._id).text(userList);
         } else {
-            console.error('Invalid structure for like_response:', data);
+            displayMessage(data.message);
         }
-    }
-});
+    });
 
 
-   socket.on('dislike_response', function(data) {
-    console.log('dislike_response received:', data);
-    if (data.result === 'success') {
-        if (data.post && data.post._id) {
+socket.on('dislike_response', function(data) {
+        if (data.result === 'success') {
+
             $('#dislike-count-' + data.post._id).text(data.total_dislikes);
+            var userList = data.disliked_by.join(', ');
+            $('#dislike-users-' + data.post._id).text(userList);
         } else {
-            console.error('Invalid structure for dislike_response:', data);
+
+            displayMessage(data.message);
         }
-    }
-});
+    });
+
+//    socket.on('dislike_response', function(data) {
+//     console.log('dislike_response received:', data);
+//     if (data.result === 'success') {
+//         if (data.post && data.post._id) {
+//             $('#dislike-count-' + data.post._id).text(data.total_dislikes);
+//         } else {
+//             console.error('Invalid structure for dislike_response:', data);
+//         }
+//     }
+// });
 
 
     socket.on('error', function(data) {

@@ -2,12 +2,9 @@
 
 {% block head %}
 <title>Post Page</title>
-
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home_style.css') }}">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 <script src="{{ url_for('static', filename='js/functions.js') }}"></script>
 {% endblock %}
 
@@ -27,8 +24,10 @@
             <p>{{ post.content | safe }}</p>
             <button class="like-button" data-post-id="{{ post._id }}">Like</button>
             <span id="like-count-{{ post._id }}">{{ post.likes | default(0) }}</span>
+            <p>Liked by: <span id="like-users-{{ post._id }}">{{ post.liked_by | join(', ') }}</span></p>
             <button class="dislike-button" data-post-id="{{ post._id }}">Dislike</button>
             <span id="dislike-count-{{ post._id }}">{{ post.dislikes | default(0) }}</span>
+            <p>Disliked by: <span id="dislike-users-{{ post._id }}">{{ post.disliked_by | join(', ') }}</span></p>
         </div>
         {% endfor %}
     </div>
