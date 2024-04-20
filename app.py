@@ -207,7 +207,7 @@ def handle_like_post(data):
         emit('like_response', {'message': 'You have already liked this post.'}, broadcast=False)
         return
 
-    update_result = posts_collection.update_one(
+    update_like = posts_collection.update_one(
         {"_id": post_id},
         {"$addToSet": {"liked": username}, "$inc": {"likes": 1}}
     )
@@ -215,14 +215,14 @@ def handle_like_post(data):
 
     post = posts_collection.find_one({"_id": post_id})
 
-    if update_result.modified_count:
+    if update_like.modified_count:
         emit('like_response', {
             'result': 'success',
             'post': {'_id': str(post_id)},
             'total_likes': post.get('likes', 0)
         }, broadcast=True)
     else:
-        emit('like_response', {'message': 'Could not like the post.'}, broadcast=False)
+        emit('like_response', {'message': 'like fail.'}, broadcast=False)
 
 
 @socketio.on('dislike_post')
@@ -245,13 +245,13 @@ def handle_dislike_post(data):
         emit('dislike_response', {'message': 'You have already disliked this post.'}, broadcast=False)
         return
 
-    update_result = posts_collection.update_one(
+    update_dislike = posts_collection.update_one(
         {"_id": post_id},
         {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}
     )
 
 
-    if update_result.modified_count:
+    if update_dislike.modified_count:
         post = posts_collection.find_one({"_id": post_id})
         emit('dislike_response', {
             'result': 'success',
@@ -259,7 +259,7 @@ def handle_dislike_post(data):
             'total_dislikes': post['dislikes']
         }, broadcast=True)
     else:
-        emit('dislike_response', {'message': 'Could not dislike the post.'}, broadcast=False)
+        emit('dislike_response', {'message': 'dislike fail.'}, broadcast=False)
 
 
 # # post page with socket
