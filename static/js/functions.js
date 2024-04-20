@@ -1,74 +1,95 @@
-function handlePost(postId, action) {
-
-  $.ajax({
-    type: "POST",
-    url: "/" + action + "_post",
-    data: {
-      post_id: postId
-    },
-    success: function(click_response) {
-
-      if (click_response.result === 'success') {
-
-        let Countnum;
-        if (action === 'like') {
-    Countnum = click_response.total_likes;
-} else {
-    Countnum = click_response.total_dislikes;
-}
-
-        const countIdSelector = "#" + action + "-count-" + postId;
-
-
-        $(countIdSelector).text(Countnum);
-      } else {
-
-        alert(click_response.message);
-      }
-    },
-    error: function() {
-      alert('Don\'t swipe votes');
-    }
-  });
-}
-
-// seck
 $(document).ready(function() {
+  var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']});
 
-  $('.like-button').click(function() {
-    const postId = $(this).data('post-id');
-    handlePost(postId, 'like');
+  console.log('Client-side script has loaded.');
+
+  $('#submit-post').on('click', function() {
+      var content = $('#post-content').val().trim();
+      console.log('Attempting to post content:', content);
+      if (content) {
+          socket.emit('create_post', { content: content });
+          $('#post-content').val('');
+      } else {
+          alert('Please enter some text before posting.');
+      }
   });
 
+ socket.on('post_created', function(data) {
+  console.log('post_created event received:', data);
+  if (data.status === 'success') {
 
-  $('.dislike-button').click(function() {
-    var postId = $(this).data('post-id');
-    handlePost(postId, 'dislike');
+      displayMessage(data.message);
+      if (data.post && data.post._id && data.post.username && data.post.content) {
+          appendNewPost(data.post);
+      } else {
+          console.error('Received post object does not have the required structure:', data.post);
+      }
+  } else {
+      alert('Error creating post');
+  }
+});
+
+ function displayMessage(message) {
+  $('#message-container').text(message).fadeIn(500).delay(3000).fadeOut(500);
+}
+
+  function appendNewPost(post) {
+      console.log('Appending new post:', post);
+
+      if (!post || !post._id || !post.username || !post.content) {
+          console.error('Post object is missing properties', post);
+          return;
+      }
+
+      var postHtml = `<div class="post" id="post-${post._id}">
+                          <p><strong>${post.username}</strong> posted:</p>
+                          <p>${post.content}</p>
+                          <button class="like-button" data-post-id="${post._id}">Like</button>
+                          <span id="like-count-${post._id}">0</span>
+                          <button class="dislike-button" data-post-id="${post._id}">Dislike</button>
+                          <span id="dislike-count-${post._id}">0</span>
+                      </div>`;
+      $('#posts-container').prepend(postHtml); // Changed to prepend to put the post at the top.
+  }
+
+  $('.post-section').on('click', '.like-button, .dislike-button', function() {
+      var postId = $(this).data('post-id');
+      var action = $(this).hasClass('like-button') ? 'like_post' : 'dislike_post';
+      console.log(`Emitting event '${action}' for post ID:`, postId);
+      socket.emit(action, { post_id: postId });
   });
+
+  socket.on('connect', function() {
+      console.log('WebSocket connected!');
+  });
+
+socket.on('like_response', function(data) {
+  console.log('like_response received:', data);
+  if (data.result === 'success') {
+
+      if (data.post && data.post._id) {
+          $('#like-count-' + data.post._id).text(data.total_likes);
+      } else {
+          console.error('Invalid structure for like_response:', data);
+      }
+  }
 });
 
-//se
-var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-$('.like-button').click(function() {
-    var postId = $(this).data('post-id');
-    socket.emit('like_post', {post_id: postId});
+ socket.on('dislike_response', function(data) {
+  console.log('dislike_response received:', data);
+  if (data.result === 'success') {
+      if (data.post && data.post._id) {
+          $('#dislike-count-' + data.post._id).text(data.total_dislikes);
+      } else {
+          console.error('Invalid structure for dislike_response:', data);
+      }
+  }
 });
 
-$('.dislike-button').click(function() {
-    var postId = $(this).data('post-id');
-    socket.emit('dislike_post', {post_id: postId});
-});
 
-
-socket.on('post_created', function(data) {
-
-});
-
-socket.on('like_updated', function(data) {
-    $('#like-count-' + data.post_id).text(data.new_like_count);
-});
-
-socket.on('dislike_updated', function(data) {
-    $('#dislike-count-' + data.post_id).text(data.new_dislike_count);
+  socket.on('error', function(data) {
+      console.error('Socket error:', data.message);
+      alert('An error occurred: ' + data.message);
+  });
 });

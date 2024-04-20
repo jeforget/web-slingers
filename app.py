@@ -17,8 +17,7 @@ app.secret_key = '13513ijnijdsuia7safv'
 upload_folder = os.path.join('static', 'profilePics')
 app.config['UPLOAD'] = upload_folder
 
-# Initialize SocketIO
-socketio = SocketIO(app)
+
 
 
 # Connect to MongoDB
@@ -146,191 +145,130 @@ def register():
     return render_template('register.html')
 
 
-# post page
-# @app.route('/page3', methods=['GET'])
-# def page3():
-#     all_posts = list(posts_collection.find())
-#     return render_template("post.html", posts=all_posts)
-#
-#
-# def create_single_post(username, content):
-#     post = {"username": username, "content": content, "created_at": datetime.now()}
-#     posts_collection.insert_one(post)
-#
-#
-# # @app.route('/create_post', methods=['POST'])
-# # def create_post():
-# #     if 'username' in session:
-# #         content = request.form['content']
-# #         # Ensure to escape the content
-# #         content = escape(content)
-# #         create_single_post(session['username'], content)
-# #         flash('Post created successfully!', 'success')
-# #     return redirect(url_for('page3'))
-# @app.route('/create_post', methods=['POST'])
-# def create_post():
-#     if 'username' in session and (not session.get("auth", False) == False):
-#         content = request.form.get('content', '')
-#         content = escape(content)
-#         create_single_post(session['username'], content)
-#         # flash('Post created successfully!')
-#     return redirect(url_for('page3'))
-#
-#
-# @app.route('/like_post', methods=['POST'])
-# # def like_post():
-# # post_id = request.form.get('post_id')
-# # username = session.get('username')
-# # return jsonify({'result': 'success'})
-#
-# # @app.route('/dislike_post', methods=['POST'])
-# # def dislike_post():
-# # post_id = request.form.get('post_id')
-# # username = session.get('username')
-# # return jsonify({'result': 'success'})
-#
-# @app.route('/like_post', methods=['POST'])
-# def like_post():
-#     post_id = request.form.get('post_id')
-#     username = session.get('username')
-#
-#     if not username:
-#         return jsonify({'result': 'error', 'message': 'Missing post ID or not logged in.'}), 400
-#
-#     post_id = ObjectId(post_id)  # Convert to ObjectId for MongoDB
-#     post = posts_collection.find_one({"_id": post_id})
-#
-#     if not post:
-#         return jsonify({'message': 'Post not found.'}), 404
-#
-#     if username in post.get('liked', []):
-#         # User has already liked this post
-#         return jsonify({'message': 'You have already liked this post.'}), 409
-#
-#     # Add the like
-#     if username not in post.get('liked', []):
-#         update_result = posts_collection.update_one(
-#             {"_id": post_id},
-#             {"$addToSet": {"liked": username}, "$inc": {"likes": 1}}
-#         )
-#
-#     if update_result.modified_count:
-#         return jsonify({'result': 'success', 'total_likes': post.get('likes', 0) + 1})
-#     else:
-#         return jsonify({'message': 'Could not like the post.'}), 500
-#
-#
-# @app.route('/dislike_post', methods=['POST'])
-# def dislike_post():
-#     post_id = request.form.get('post_id')
-#     username = session.get('username')
-#
-#     if not username:
-#         return jsonify({'message': 'Missing post ID or not logged in.'}), 400
-#
-#     post_id = ObjectId(post_id)
-#     post = posts_collection.find_one({"_id": post_id})
-#
-#     if not post:
-#         return jsonify({'message': 'Post not found.'}), 404
-#
-#     if username in post.get('disliked', []):
-#         # User has already disliked this post
-#         return jsonify({'message': 'You have already disliked this post.'}), 409
-#
-#     # Add the dislike
-#     update_result = posts_collection.update_one(
-#         {"_id": post_id},
-#         {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}  # $ensures no more than one per person
-#     )
-#
-#     if update_result.modified_count:
-#         return jsonify({'result': 'success', 'total_dislikes': post.get('dislikes', 0) + 1})
-#     else:
-#         return jsonify({'message': 'Could not dislike the post.'}), 500
+socketio = SocketIO(app)
 
-# # post page with socket
 # Define WebSockets
-@socketio.on('connect')
-def handle_connect():
-    print('Client is connected')
-
-
-@socketio.on('disconnect')
-def handle_disconnect():
-    print('Client is disconnected')
-
-
-@socketio.on('action')
-def handle_my_event(json):
-    print('received action: ' + str(json))
-    socketio.emit('response', json)
-
+@app.route('/page3', methods=['GET'])
+def page3():
+    all_posts = list(posts_collection.find())
+    return render_template("post.html", posts=all_posts)
 
 def create_single_post(username, content):
-    post = {"username": username, "content": content, "created_at": datetime.now()}
-    posts_collection.insert_one(post)
+    post_data = {
+        "username": username,
+        "content": content,
+        "created_at": datetime.now()
+    }
+    result = posts_collection.insert_one(post_data)
+    post_data['_id'] = str(result.inserted_id)
+    print(f"Post inserted with ID: {post_data['_id']}")
+    return post_data
 
 
 @socketio.on('create_post')
-def handle_create_post(json):
+def handle_create_post(data):
+    print("Received create_post event:", data)
     username = session.get('username')
-    if username:
-        content = escape(json['content'])
-        create_single_post(username, content)
-        emit('post_created', {'username': username, 'content': content}, broadcast=True)
+    if not username:
+        print("No username found in session.")
+        return
+    content = escape(data['content'])
+    post_data = create_single_post(username, content)
 
 
-def update_like_count(post_id, username):
+    if isinstance(post_data['created_at'], datetime):
+        post_data['created_at'] = post_data['created_at'].isoformat()
+
+    emit('post_created', {
+        'status': 'success',
+        'message': 'Post created successfully!',
+        'post': post_data
+    }, broadcast=True)
+
+
+
+@socketio.on('like_post')
+def handle_like_post(data):
+    post_id = data.get('post_id')
+    username = session.get('username')
+
+    if not username or not post_id:
+        emit('like_response', {'result': 'error', 'message': 'Missing post ID or not logged in.'}, broadcast=False)
+        return
+
     post_id = ObjectId(post_id)
     post = posts_collection.find_one({"_id": post_id})
+
     if not post:
-        return False, "Post not found."
+        emit('like_response', {'message': 'Post not found.'}, broadcast=False)
+        return
+
     if username in post.get('liked', []):
-        return False, "Already liked."
+        emit('like_response', {'message': 'You have already liked this post.'}, broadcast=False)
+        return
+
     update_result = posts_collection.update_one(
         {"_id": post_id},
         {"$addToSet": {"liked": username}, "$inc": {"likes": 1}}
     )
-    return update_result.modified_count > 0, post.get('likes', 0) + 1
 
 
-def update_dislike_count(post_id, username):
+    post = posts_collection.find_one({"_id": post_id})
+
+    if update_result.modified_count:
+        emit('like_response', {
+            'result': 'success',
+            'post': {'_id': str(post_id)},
+            'total_likes': post.get('likes', 0)
+        }, broadcast=True)
+    else:
+        emit('like_response', {'message': 'Could not like the post.'}, broadcast=False)
+
+
+@socketio.on('dislike_post')
+def handle_dislike_post(data):
+    post_id = data.get('post_id')
+    username = session.get('username')
+
+    if not username or not post_id:
+        emit('dislike_response', {'message': 'Missing post ID or not logged in.'}, broadcast=False)
+        return
+
     post_id = ObjectId(post_id)
     post = posts_collection.find_one({"_id": post_id})
+
     if not post:
-        return False, "Post not found."
+        emit('dislike_response', {'message': 'Post not found.'}, broadcast=False)
+        return
+
     if username in post.get('disliked', []):
-        return False, "Already disliked."
+        emit('dislike_response', {'message': 'You have already disliked this post.'}, broadcast=False)
+        return
+
     update_result = posts_collection.update_one(
         {"_id": post_id},
         {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}
     )
-    return update_result.modified_count > 0, post.get('dislikes', 0) + 1
 
+    # if update_result.modified_count:
+    #     post = posts_collection.find_one({"_id": post_id})
+    #     emit('dislike_response', {
+    #         'result': 'success',
+    #         'post': {'post_id': str(post_id)},
+    #         'total_dislikes': post['dislikes']
+    #     }, broadcast=True)
+    # else:
+    #     emit('dislike_response', {'message': 'Could not dislike the post.'}, broadcast=False)
+    if update_result.modified_count:
+        post = posts_collection.find_one({"_id": post_id})
+        emit('dislike_response', {
+            'result': 'success',
+            'post': {'_id': str(post_id)},
+            'total_dislikes': post['dislikes']
+        }, broadcast=True)
+    else:
+        emit('dislike_response', {'message': 'Could not dislike the post.'}, broadcast=False)
 
-@socketio.on('like_post')
-def handle_like_post(json):
-    username = session.get('username')
-    post_id = json.get('post_id')
-    if username and post_id:
-        success, result = update_like_count(post_id, username)
-        if success:
-            emit('like_updated', {'post_id': post_id, 'new_like_count': result}, broadcast=True)
-        else:
-            emit('error', {'message': result})
-
-
-@socketio.on('dislike_post')
-def handle_dislike_post(json):
-    username = session.get('username')
-    post_id = json.get('post_id')
-    if username and post_id:
-        success, result = update_dislike_count(post_id, username)
-        if success:
-            emit('dislike_updated', {'post_id': post_id, 'new_dislike_count': result}, broadcast=True)
-        else:
-            emit('error', {'message': result})
 
 # # post page with socket
 
@@ -356,5 +294,5 @@ def set_response_headers(response):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # app.run(host='0.0.0.0', port=5000, debug=True)
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)
