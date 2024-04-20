@@ -1,31 +1,31 @@
 $(document).ready(function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']});
 
-    console.log('Client-side script has loaded.');
+    console.log('Client script has work.');
 
     $('#submit-post').on('click', function() {
         var content = $('#post-content').val().trim();
-        console.log('Attempting to post content:', content);
+        console.log('Try to post message with:', content);
         if (content) {
             socket.emit('create_post', { content: content });
             $('#post-content').val('');
         } else {
-            alert('Please enter some text before posting.');
+            alert('you should enter text before posting.');
         }
     });
 
    socket.on('post_created', function(data) {
-    console.log('post_created event received:', data);
+    console.log('post_created received with:', data);
     if (data.status === 'success') {
 
         displayMessage(data.message);
         if (data.post && data.post._id && data.post.username && data.post.content) {
-            appendNewPost(data.post);
+            makeNewPost(data.post);
         } else {
-            console.error('Received post object does not have the required structure:', data.post);
+            console.error('Received post with error structure:', data.post);
         }
     } else {
-        alert('Error creating post');
+        alert('Error with post');
     }
 });
 
@@ -33,15 +33,15 @@ $(document).ready(function() {
     $('#message-container').text(message).fadeIn(500).delay(3000).fadeOut(500);
 }
 
-    function appendNewPost(post) {
-        console.log('Appending new post:', post);
+    function makeNewPost(post) {
+        console.log(' new post with:', post);
 
         if (!post || !post._id || !post.username || !post.content) {
-            console.error('Post object is missing properties', post);
+            console.error('Post object is missing some part', post);
             return;
         }
 
-        var postHtml = `<div class="post" id="post-${post._id}">
+        var postMessage = `<div class="post" id="post-${post._id}">
                             <p><strong>${post.username}</strong> posted:</p>
                             <p>${post.content}</p>
                             <button class="like-button" data-post-id="${post._id}">Like</button>
@@ -49,13 +49,13 @@ $(document).ready(function() {
                             <button class="dislike-button" data-post-id="${post._id}">Dislike</button>
                             <span id="dislike-count-${post._id}">0</span>
                         </div>`;
-        $('#posts-container').prepend(postHtml); // Changed to prepend to put the post at the top.
+        $('#posts-container').prepend(postMessage);
     }
 
     $('.post-section').on('click', '.like-button, .dislike-button', function() {
         var postId = $(this).data('post-id');
         var action = $(this).hasClass('like-button') ? 'like_post' : 'dislike_post';
-        console.log(`Emitting event '${action}' for post ID:`, postId);
+        console.log(`event '${action}' for post ID:`, postId);
         socket.emit(action, { post_id: postId });
     });
 

@@ -150,8 +150,8 @@ socketio = SocketIO(app)
 # Define WebSockets
 @app.route('/page3', methods=['GET'])
 def page3():
-    all_posts = list(posts_collection.find())
-    return render_template("post.html", posts=all_posts)
+    page_posts = list(posts_collection.find())
+    return render_template("post.html", posts=page_posts)
 
 def create_single_post(username, content):
     post_data = {
@@ -161,19 +161,19 @@ def create_single_post(username, content):
     }
     result = posts_collection.insert_one(post_data)
     post_data['_id'] = str(result.inserted_id)
-    print(f"Post inserted with ID: {post_data['_id']}")
+    print(f"Post with ID: {post_data['_id']}")
     return post_data
 
 
 @socketio.on('create_post')
-def handle_create_post(data):
-    print("Received create_post event:", data)
+def handle_create_post(raw_data):
+    print("Received create_post with:", raw_data)
     username = session.get('username')
     if not username:
-        print("No username found in session.")
+        print("No username found .")
         return
-    content = escape(data['content'])
-    post_data = create_single_post(username, content)
+    escape_content = escape(raw_data['content'])
+    post_data = create_single_post(username, escape_content)
 
 
     if isinstance(post_data['created_at'], datetime):
@@ -250,15 +250,7 @@ def handle_dislike_post(data):
         {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}
     )
 
-    # if update_result.modified_count:
-    #     post = posts_collection.find_one({"_id": post_id})
-    #     emit('dislike_response', {
-    #         'result': 'success',
-    #         'post': {'post_id': str(post_id)},
-    #         'total_dislikes': post['dislikes']
-    #     }, broadcast=True)
-    # else:
-    #     emit('dislike_response', {'message': 'Could not dislike the post.'}, broadcast=False)
+
     if update_result.modified_count:
         post = posts_collection.find_one({"_id": post_id})
         emit('dislike_response', {
