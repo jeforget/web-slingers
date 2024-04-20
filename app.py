@@ -169,12 +169,14 @@ def create_single_post(username, content):
 def handle_create_post(raw_data):
     print("Received create_post with:", raw_data)
     username = session.get('username')
+
     if not username:
         print("No username found .")
         return
     escape_content = escape(raw_data['content'])
     post_data = create_single_post(username, escape_content)
-
+    post_data['liked_by'] = []
+    post_data['disliked_by'] = []
 
     if isinstance(post_data['created_at'], datetime):
         post_data['created_at'] = post_data['created_at'].isoformat()
@@ -203,15 +205,37 @@ def handle_like_post(data):
         emit('like_response', {'message': 'Post not found.'}, broadcast=False)
         return
 
-    if username in post.get('liked', []):
-        emit('like_response', {'message': 'You have already liked this post.'}, broadcast=False)
+    if username in post.get('liked_by', []):
+        emit('like_response', {'result': 'error', 'message': 'You have already liked this post.'}, broadcast=False)
         return
+    # if username in post.get('liked', []):
+    #     emit('like_response', {'message': 'You have already liked this post.'}, broadcast=False)
+    #     return
 
+
+    # update_like = posts_collection.update_one(
+    #     {"_id": post_id},
+    #     {"$addToSet": {"liked": username}, "$inc": {"likes": 1}}
+    # )
+    #
+    #
+    # post = posts_collection.find_one({"_id": post_id})
+    #
+    # if update_like.modified_count:
+    #     emit('like_response', {
+    #         'result': 'success',
+    #         'post': {'_id': str(post_id)},
+    #         'total_likes': post.get('likes', 0)
+    #     }, broadcast=True)
+    # else:
+    #     emit('like_response', {'message': 'like fail.'}, broadcast=False)
     update_like = posts_collection.update_one(
         {"_id": post_id},
-        {"$addToSet": {"liked": username}, "$inc": {"likes": 1}}
+        {
+            "$addToSet": {"liked_by": username},
+            "$inc": {"likes": 1}
+        }
     )
-
 
     post = posts_collection.find_one({"_id": post_id})
 
@@ -219,7 +243,8 @@ def handle_like_post(data):
         emit('like_response', {
             'result': 'success',
             'post': {'_id': str(post_id)},
-            'total_likes': post.get('likes', 0)
+            'total_likes': post.get('likes', 0),
+            'liked_by': post.get('liked_by', [])
         }, broadcast=True)
     else:
         emit('like_response', {'message': 'like fail.'}, broadcast=False)
@@ -241,22 +266,44 @@ def handle_dislike_post(data):
         emit('dislike_response', {'message': 'Post not found.'}, broadcast=False)
         return
 
-    if username in post.get('disliked', []):
-        emit('dislike_response', {'message': 'You have already disliked this post.'}, broadcast=False)
+    if username in post.get('disliked_by', []):
+        emit('dislike_response', {'result': 'error', 'message': 'You have already disliked this post.'})
         return
+    # if username in post.get('disliked', []):
+    #     emit('dislike_response', {'message': 'You have already disliked this post.'}, broadcast=False)
+    #     return
 
+    # update_dislike = posts_collection.update_one(
+    #     {"_id": post_id},
+    #     {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}
+    # )
+    #
+    #
+    # if update_dislike.modified_count:
+    #     post = posts_collection.find_one({"_id": post_id})
+    #     emit('dislike_response', {
+    #         'result': 'success',
+    #         'post': {'_id': str(post_id)},
+    #         'total_dislikes': post['dislikes']
+    #     }, broadcast=True)
+    # else:
+    #     emit('dislike_response', {'message': 'dislike fail.'}, broadcast=False)
     update_dislike = posts_collection.update_one(
         {"_id": post_id},
-        {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}
+        {
+            "$addToSet": {"disliked_by": username},
+            "$inc": {"dislikes": 1}
+        }
     )
 
+    post = posts_collection.find_one({"_id": post_id})
 
     if update_dislike.modified_count:
-        post = posts_collection.find_one({"_id": post_id})
         emit('dislike_response', {
             'result': 'success',
             'post': {'_id': str(post_id)},
-            'total_dislikes': post['dislikes']
+            'total_dislikes': post.get('dislikes', 0),
+            'disliked_by': post.get('disliked_by', [])
         }, broadcast=True)
     else:
         emit('dislike_response', {'message': 'dislike fail.'}, broadcast=False)
