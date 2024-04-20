@@ -63,23 +63,34 @@ $(document).ready(function() {
         console.log('WebSocket connected!');
     });
 
-    socket.on('like_response', function(data) {
-        console.log('like_response received:', data);
-        if (data.result === 'success') {
-            $('#like-count-' + data.post._id).text(data.total_likes);
-        }
-    });
+  socket.on('like_response', function(data) {
+    console.log('like_response received:', data);
+    if (data.result === 'success') {
 
-    socket.on('dislike_response', function(data) {
-        console.log('dislike_response received:', data);
-        if (data.result === 'success') {
-            $('#dislike-count-' + data.post._id).text(data.total_dislikes);
+        if (data.post && data.post._id) {
+            $('#like-count-' + data.post._id).text(data.total_likes);
+        } else {
+            console.error('Invalid structure for like_response:', data);
         }
-    });
+    }
+});
+
+
+   socket.on('dislike_response', function(data) {
+    console.log('dislike_response received:', data);
+    if (data.result === 'success') {
+        if (data.post && data.post._id) {
+            $('#dislike-count-' + data.post._id).text(data.total_dislikes);
+        } else {
+            console.error('Invalid structure for dislike_response:', data);
+        }
+    }
+});
+
 
     socket.on('error', function(data) {
         console.error('Socket error:', data.message);
-        alert('An error occurred: ' + data.message); // Added an alert for user-friendly error messages.
+        alert('An error occurred: ' + data.message);
     });
 });
 
