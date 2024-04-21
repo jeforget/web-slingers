@@ -151,6 +151,8 @@ socketio = SocketIO(app)
 @app.route('/page3', methods=['GET'])
 def page3():
     page_posts = list(posts_collection.find())
+    if page_posts.__len__() > 0:
+        page_posts = list(reversed(page_posts))
     return render_template("post.html", posts=page_posts)
 
 def create_single_post(username, content):

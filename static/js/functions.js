@@ -42,16 +42,14 @@ $(document).ready(function() {
 
     var postMessage = `
         <div class="post" id="post-${post._id}">
-            <p><strong>${post.username}</strong> posted:</p>
-            <img src="static/profilePics/${post.username}profile_photo.jpg" alt="Profile Picture" style="height: 50px; width: 50px;">
-            <p>${post.content}</p>
-            <button class="like-button" data-post-id="${post._id}">Like</button>
-            <span id="like-count-${post._id}">0</span>
-            <p>Liked by: <span id="like-users-${post._id}"></span></p>
-            <button class="dislike-button" data-post-id="${post._id}">Dislike</button>
-            <span id="dislike-count-${post._id}">0</span>
-            <p>Disliked by: <span id="dislike-users-${post._id}"></span></p>
-        </div>`;
+        
+            <p><img src="static/profilePics/${post.username}profile_photo.jpg" alt="Profile Picture" style="height: 50px; width: 50px;"><span><strong> ${post.username}</strong> posted: ${post.content}</span></p>
+            <button class="like-button" data-post-id="${post._id}">Like</button><span id="like-count-${post._id}">0</span><p>Liked by: <span id="like-users-${post._id}"></span></p>
+            <button class="dislike-button" data-post-id="${post._id}">Dislike</button><span id="dislike-count-${post._id}">0</span><p>Disliked by: <span id="dislike-users-${post._id}"></span></p>
+        
+        </div> <br>`;
+
+
     $('#posts-container').prepend(postMessage);
 }
 
