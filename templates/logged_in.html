@@ -8,29 +8,42 @@
 {% endblock %}
 
 {% block body %}
-<div class="title">
-    <h1 style="text-align: center">PostBoard</h1>
-    <h2 style="text-align: center">The place for posting stuff.</h2>
+    <div class="title">
+        <h1 style="text-align: center">PostBoard</h1>
+        <h2 style="text-align: center">The place for posting stuff.</h2>
+        <br>
+    </div>
+    <div style="text-align: center"; class="header_buttons">
+        <a href="/logout">Logout</a>
+        <a href="/page3">Post</a>
+    </div>
     <br>
-</div>
-<div style="text-align: center"; class="header_buttons">
-    <a href="/logout">Logout</a>
-    <a href="/page3">Post</a>
-</div>
-<br>
-<div style="text-align: center"; class="row">
+    <div style="text-align: center"; class="row">
 
-    <h1>Welcome back, {{ session["username"] }}</h1>
+        <h1>Welcome back, {{ session["username"] }}</h1>
 
-</div>
-<br>
+        <br>
+    <form action="{{ url_for('profile_photo') }}" enctype="multipart/form-data" method="POST">
+    <label> (Only jpg images allowed) To Upload Profile Picture:
+        <br>
+        <input id="profilePhotoUpload" type="file" name="fileToUpload"/>
+    </label>
+        <input type="submit" value="Upload File">
+    </form>
+
+    {% if fileToUpload %}
+    <h2> Your Profile Photo is</h2>
+    <img src="{{ fileToUpload }}" style="width:50px;height:50px;">
+    {% else %}
+    <h2> No Profile photo uploaded</h2>
+    {% endif %}
+
+    </div>
 
 
-<div style="text-align: center"; class="image_div">
+
+    <div style="text-align: center"; class="image_div">
     <br>
-    <image src="{{ url_for('static', filename='images/nova-approved.png')}}"></image>
-
-    <p id="nova">This is Nova!</p>
-    <script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
-</div>
+    <image src="{{ url_for('static', filename='images/nova-approved.png')}}" alt="Nova approved" style="width:550px;height:400px;"></image>
+    </div>
 {% endblock %}

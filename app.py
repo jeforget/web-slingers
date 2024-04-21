@@ -6,11 +6,18 @@ from bson.objectid import ObjectId
 import bcrypt
 import secrets
 import hashlib
+import os
 from helper_func import validate_password
+from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 
 app.secret_key = '13513ijnijdsuia7safv'
+
+upload_folder = os.path.join('static', 'profilePics')
+app.config['UPLOAD'] = upload_folder
+
+
 
 
 # Connect to MongoDB
@@ -46,6 +53,12 @@ def index():
             response = make_response(render_template("index.html"))
             response.set_cookie("Auth_token", "zero", httponly=True)
             return response
+        # return redirect(url_for('profile_photo'))
+        if not session["profile_photo"] == None:
+            filename = session["profile_photo"]
+            image = os.path.join(app.config['UPLOAD'], filename)
+            session['profile_photo'] = filename
+            return render_template('logged_in.html', fileToUpload=image)
         return render_template("logged_in.html")
     return render_template("index.html")
 
@@ -75,8 +88,9 @@ def login():
             collection.update_one({"username": username}, {"$set": {"Auth_token": hashed_token}})
             session["username"] = username
             session["auth"] = True
+            session["profile_photo"] = None
             response = make_response(redirect(url_for('index')))
-            response.set_cookie("Auth_token", auth_token, httponly=True)
+            response.set_cookie("Auth_token", auth_token, httponly=True, max_age=3600)
 
             return response
 
@@ -89,6 +103,7 @@ def login():
 def logout():
     session["username"] = None
     session.pop("auth", False)
+    session["profile_photo"] = None
     response = make_response(redirect(url_for("index")))
     response.delete_cookie("Auth_token")
     return response
@@ -114,7 +129,6 @@ def register():
             flash('Username already exists!', 'error')
             return redirect(url_for('register'))
 
-
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
@@ -131,108 +145,187 @@ def register():
     return render_template('register.html')
 
 
-# post page
+socketio = SocketIO(app)
+
+# Define WebSockets
 @app.route('/page3', methods=['GET'])
 def page3():
-    all_posts = list(posts_collection.find())
-    return render_template("post.html", posts=all_posts)
-
+    page_posts = list(posts_collection.find())
+    if page_posts.__len__() > 0:
+        page_posts = list(reversed(page_posts))
+    return render_template("post.html", posts=page_posts)
 
 def create_single_post(username, content):
-    post = {"username": username, "content": content, "created_at": datetime.now()}
-    posts_collection.insert_one(post)
+    post_data = {
+        "username": username,
+        "content": content,
+        "created_at": datetime.now()
+    }
+    result = posts_collection.insert_one(post_data)
+    post_data['_id'] = str(result.inserted_id)
+    print(f"Post with ID: {post_data['_id']}")
+    return post_data
 
 
-# @app.route('/create_post', methods=['POST'])
-# def create_post():
-#     if 'username' in session:
-#         content = request.form['content']
-#         # Ensure to escape the content
-#         content = escape(content)
-#         create_single_post(session['username'], content)
-#         flash('Post created successfully!', 'success')
-#     return redirect(url_for('page3'))
-@app.route('/create_post', methods=['POST'])
-def create_post():
-    if 'username' in session and (not session.get("auth", False) == False):
-        content = request.form.get('content', '')
-        content = escape(content)
-        create_single_post(session['username'], content)
-        # flash('Post created successfully!')
-    return redirect(url_for('page3'))
-
-
-@app.route('/like_post', methods=['POST'])
-# def like_post():
-# post_id = request.form.get('post_id')
-# username = session.get('username')
-# return jsonify({'result': 'success'})
-
-# @app.route('/dislike_post', methods=['POST'])
-# def dislike_post():
-# post_id = request.form.get('post_id')
-# username = session.get('username')
-# return jsonify({'result': 'success'})
-
-@app.route('/like_post', methods=['POST'])
-def like_post():
-    post_id = request.form.get('post_id')
+@socketio.on('create_post')
+def handle_create_post(raw_data):
+    print("Received create_post with:", raw_data)
     username = session.get('username')
 
     if not username:
-        return jsonify({'result': 'error', 'message': 'Missing post ID or not logged in.'}), 400
+        print("No username found .")
+        return
+    escape_content = escape(raw_data['content'])
+    post_data = create_single_post(username, escape_content)
+    post_data['liked_by'] = []
+    post_data['disliked_by'] = []
 
-    post_id = ObjectId(post_id)  # Convert to ObjectId for MongoDB
-    post = posts_collection.find_one({"_id": post_id})
+    if isinstance(post_data['created_at'], datetime):
+        post_data['created_at'] = post_data['created_at'].isoformat()
 
-    if not post:
-        return jsonify({'message': 'Post not found.'}), 404
-
-    if username in post.get('liked', []):
-        # User has already liked this post
-        return jsonify({'message': 'You have already liked this post.'}), 409
-
-    # Add the like
-    if username not in post.get('liked', []):
-        update_result = posts_collection.update_one(
-            {"_id": post_id},
-            {"$addToSet": {"liked": username}, "$inc": {"likes": 1}}
-        )
-
-    if update_result.modified_count:
-        return jsonify({'result': 'success', 'total_likes': post.get('likes', 0) + 1})
-    else:
-        return jsonify({'message': 'Could not like the post.'}), 500
+    emit('post_created', {
+        'status': 'success',
+        'message': 'Post created successfully!',
+        'post': post_data
+    }, broadcast=True)
 
 
-@app.route('/dislike_post', methods=['POST'])
-def dislike_post():
-    post_id = request.form.get('post_id')
+
+@socketio.on('like_post')
+def handle_like_post(data):
+    post_id = data.get('post_id')
     username = session.get('username')
 
-    if not username:
-        return jsonify({'message': 'Missing post ID or not logged in.'}), 400
+    if not username or not post_id:
+        emit('like_response', {'result': 'error', 'message': 'Missing post ID or not logged in.'}, broadcast=False)
+        return
 
     post_id = ObjectId(post_id)
     post = posts_collection.find_one({"_id": post_id})
 
     if not post:
-        return jsonify({'message': 'Post not found.'}), 404
+        emit('like_response', {'message': 'Post not found.'}, broadcast=False)
+        return
 
-    if username in post.get('disliked', []):
-        # User has already disliked this post
-        return jsonify({'message': 'You have already disliked this post.'}), 409
+    if username in post.get('liked_by', []):
+        emit('like_response', {'result': 'error', 'message': 'You have already liked this post.'}, broadcast=False)
+        return
+    # if username in post.get('liked', []):
+    #     emit('like_response', {'message': 'You have already liked this post.'}, broadcast=False)
+    #     return
 
-    # Add the dislike
-    update_result = posts_collection.update_one(
+
+    # update_like = posts_collection.update_one(
+    #     {"_id": post_id},
+    #     {"$addToSet": {"liked": username}, "$inc": {"likes": 1}}
+    # )
+    #
+    #
+    # post = posts_collection.find_one({"_id": post_id})
+    #
+    # if update_like.modified_count:
+    #     emit('like_response', {
+    #         'result': 'success',
+    #         'post': {'_id': str(post_id)},
+    #         'total_likes': post.get('likes', 0)
+    #     }, broadcast=True)
+    # else:
+    #     emit('like_response', {'message': 'like fail.'}, broadcast=False)
+    update_like = posts_collection.update_one(
         {"_id": post_id},
-        {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}  # $ensures no more than one per person
+        {
+            "$addToSet": {"liked_by": username},
+            "$inc": {"likes": 1}
+        }
     )
 
-    if update_result.modified_count:
-        return jsonify({'result': 'success', 'total_dislikes': post.get('dislikes', 0) + 1})
+    post = posts_collection.find_one({"_id": post_id})
+
+    if update_like.modified_count:
+        emit('like_response', {
+            'result': 'success',
+            'post': {'_id': str(post_id)},
+            'total_likes': post.get('likes', 0),
+            'liked_by': post.get('liked_by', [])
+        }, broadcast=True)
     else:
-        return jsonify({'message': 'Could not dislike the post.'}), 500
+        emit('like_response', {'message': 'like fail.'}, broadcast=False)
+
+
+@socketio.on('dislike_post')
+def handle_dislike_post(data):
+    post_id = data.get('post_id')
+    username = session.get('username')
+
+    if not username or not post_id:
+        emit('dislike_response', {'message': 'Missing post ID or not logged in.'}, broadcast=False)
+        return
+
+    post_id = ObjectId(post_id)
+    post = posts_collection.find_one({"_id": post_id})
+
+    if not post:
+        emit('dislike_response', {'message': 'Post not found.'}, broadcast=False)
+        return
+
+    if username in post.get('disliked_by', []):
+        emit('dislike_response', {'result': 'error', 'message': 'You have already disliked this post.'})
+        return
+    # if username in post.get('disliked', []):
+    #     emit('dislike_response', {'message': 'You have already disliked this post.'}, broadcast=False)
+    #     return
+
+    # update_dislike = posts_collection.update_one(
+    #     {"_id": post_id},
+    #     {"$addToSet": {"disliked": username}, "$inc": {"dislikes": 1}}
+    # )
+    #
+    #
+    # if update_dislike.modified_count:
+    #     post = posts_collection.find_one({"_id": post_id})
+    #     emit('dislike_response', {
+    #         'result': 'success',
+    #         'post': {'_id': str(post_id)},
+    #         'total_dislikes': post['dislikes']
+    #     }, broadcast=True)
+    # else:
+    #     emit('dislike_response', {'message': 'dislike fail.'}, broadcast=False)
+    update_dislike = posts_collection.update_one(
+        {"_id": post_id},
+        {
+            "$addToSet": {"disliked_by": username},
+            "$inc": {"dislikes": 1}
+        }
+    )
+
+    post = posts_collection.find_one({"_id": post_id})
+
+    if update_dislike.modified_count:
+        emit('dislike_response', {
+            'result': 'success',
+            'post': {'_id': str(post_id)},
+            'total_dislikes': post.get('dislikes', 0),
+            'disliked_by': post.get('disliked_by', [])
+        }, broadcast=True)
+    else:
+        emit('dislike_response', {'message': 'dislike fail.'}, broadcast=False)
+
+
+# # post page with socket
+
+@app.route('/logged_in', methods=['POST'])
+def profile_photo():
+    if request.method == 'POST':
+        username = session.get("username", None)
+        if not username == None:
+            file = request.files["fileToUpload"]
+            filename = username + "profile_photo.jpg"
+            file.save(os.path.join(app.config['UPLOAD'], filename))
+            image = os.path.join(app.config['UPLOAD'], filename)
+            session['profile_photo'] = filename
+            return render_template('logged_in.html', fileToUpload=image)
+        return render_template("index.html")
+    return render_template("logged_in.html")
 
 
 @app.after_request
@@ -242,4 +335,5 @@ def set_response_headers(response):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # app.run(host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)

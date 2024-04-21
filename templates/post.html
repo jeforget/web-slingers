@@ -1,34 +1,38 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    <br/>
-    <a href="{{ url_for('index') }}">Back to Home</a>
-    <br/>
 <title>Post Page</title>
-
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/post_style.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 <script src="{{ url_for('static', filename='js/functions.js') }}"></script>
 {% endblock %}
 
 {% block body %}
 <div class="post-section">
-    <h1>Say some things</h1>
-    <form action="{{ url_for('create_post') }}" method="post">
-        <textarea name="content" required placeholder="Make your post here!"></textarea>
-        <input type="submit" value="Post">
-    </form>
+     <h1>You must register an account and log in to post content </h1>
+        <a href="{{ url_for('index') }}">Back to Home</a>
+<br>
+    <textarea id="post-content" required placeholder="Say something, make your post here!"></textarea>
+    <button id="submit-post">Post</button>
+    <div id="message-container" style="display: none;"></div>
     <hr>
     <h1>Posts</h1>
-    {% for post in posts %}
-        <div class="post" id="post-{{ post._id }}">
-            <p><strong>{{ post.username }}</strong> posted:</p>
-            <p>{{ post.content | safe }}</p>
+    <div id="posts-container">
+        {% for post in posts %}
+        <div  class="post" id="post-{{ post._id }}">
+        <span>
+
+            <p><img src="{{ url_for('static', filename='profilePics/'+ post.username + 'profile_photo.jpg') }}" alt="Profile Picture" style="height: 50px; width: 50px;"><span><strong> {{ post.username }}</strong> posted: {{ post.content | safe }} </span></p>
             <button class="like-button" data-post-id="{{ post._id }}">Like</button>
             <span id="like-count-{{ post._id }}">{{ post.likes | default(0) }}</span>
+            <p>Liked by: <span id="like-users-{{ post._id }}">{{ post.liked_by | join(', ') }}</span></p>
             <button class="dislike-button" data-post-id="{{ post._id }}">Dislike</button>
             <span id="dislike-count-{{ post._id }}">{{ post.dislikes | default(0) }}</span>
+            <p>Disliked by: <span id="dislike-users-{{ post._id }}">{{ post.disliked_by | join(', ') }}</span></p>
+        </span>
         </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
