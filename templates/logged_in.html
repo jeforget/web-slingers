@@ -22,10 +22,10 @@
 
         <h1>Welcome back, {{ session["username"] }}</h1>
 
-    </div>
-    <br>
+        <br>
     <form action="{{ url_for('profile_photo') }}" enctype="multipart/form-data" method="POST">
     <label> (Only jpg images allowed) To Upload Profile Picture:
+        <br>
         <input id="profilePhotoUpload" type="file" name="fileToUpload"/>
     </label>
         <input type="submit" value="Upload File">
@@ -38,12 +38,12 @@
     <h2> No Profile photo uploaded</h2>
     {% endif %}
 
+    </div>
+
+
 
     <div style="text-align: center"; class="image_div">
-        <br>
-        <image src="{{ url_for('static', filename='images/nova-approved.png')}}"></image>
-
-        <p id="nova">This is Nova!</p>
-        <script src="{{ url_for('static', filename='js/home_functions.js') }}"></script>
+    <br>
+    <image src="{{ url_for('static', filename='images/nova-approved.png')}}" alt="Nova approved" style="width:550px;height:400px;"></image>
     </div>
 {% endblock %}
