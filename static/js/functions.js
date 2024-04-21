@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']});
+    var socket = io.connect('https://' + document.domain + ':' + location.port, {transports: ['websocket']});
 
     console.log('Client script has work.');
 
