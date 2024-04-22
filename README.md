@@ -1,5 +1,12 @@
+# A note to whoever is grading this:
+We sadly could not get https working with websockets, and have two (same IP just one is HTTP and one is HTTPS) "deployed" versions.
+
+This link is the HTTP deployment. This one has obj 1 and obj 2: http://143.198.180.44:8990/
+
+This link is to a secure version that should be using HTTPS. This one has obj 1 and obj 3 set up. The chat does not function however, so we cannot use this one: https://postboard.win/
+
 # DO NOT PUSH TO OR MODIFY MAIN
-I wanted to go over this in the meeting but to avoid us overwriting each other's stuff you need to **CREATE A BRANCH OFF OF DEVELOP** and work from there. Then once you're done, pull from develop, then merge with develop! We should **NOT** be touching main until we're done and have the bugs worked out!
+I wanted to go over this in the meeting but to avoid us overwriting each other's stuff you need to **CREATE A BRANCH OFF OF DEVELOP** and work from there. Then once you're done, merge with develop! We should **NOT** be touching main until we're done and have the bugs worked out! Only then will we merge develop with main.
 
 # Repo Layout:
 This new layout should allow us to add without overwriting each other's files.
