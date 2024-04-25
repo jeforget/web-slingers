@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7d68a695-09c8-4fea-9e66-7ac8abc43d9e" name="Changes" comment="Created a non-websocket version of the app to deploy for our demo." />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="ProfilePage" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2dvU9mC4mhantGHFEPNxR7ZzAHo" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "deployment",
+    "last_opened_file_path": "/Users/j4jet/PycharmProjects/web-slingers/static/css",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static/css" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static/images" />
+      <recent name="$PROJECT_DIR$/templates" />
+      <recent name="$PROJECT_DIR$/static/profilePics" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Flask server.web-slingers">
+    <configuration name="web-slingers" type="PythonConfigurationType" factoryName="Python">
+      <module name="web-slingers" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="web-slingers" type="Python.FlaskServer">
+      <module name="web-slingers" />
+      <option name="target" value="$PROJECT_DIR$/app.py" />
+      <option name="targetType" value="PATH" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7d68a695-09c8-4fea-9e66-7ac8abc43d9e" name="Changes" comment="" />
+      <created>1710887897860</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1710887897860</updated>
+      <workItem from="1710887899801" duration="533000" />
+      <workItem from="1711048831049" duration="1120000" />
+      <workItem from="1711224595307" duration="386000" />
+      <workItem from="1711311217245" duration="4121000" />
+      <workItem from="1711319932602" duration="936000" />
+      <workItem from="1711989246128" duration="12000" />
+      <workItem from="1713287695512" duration="2266000" />
+      <workItem from="1713545340448" duration="123000" />
+      <workItem from="1713638246395" duration="752000" />
+      <workItem from="1713639307183" duration="6725000" />
+      <workItem from="1713669923180" duration="10461000" />
+      <workItem from="1713722588698" duration="2253000" />
+      <workItem from="1713764743789" duration="162000" />
+      <workItem from="1713765292905" duration="786000" />
+      <workItem from="1714015792045" duration="30000" />
+      <workItem from="1714015829025" duration="144000" />
+      <workItem from="1714016472807" duration="2465000" />
+    </task>
+    <task id="LOCAL-00001" summary="Fixed up the home page to be less of a placeholder, added a different image and made some changes to the html and js.">
+      <option name="closed" value="true" />
+      <created>1711317039318</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1711317039318</updated>
+    </task>
+    <task id="LOCAL-00002" summary="A few annoying typos, fixed">
+      <option name="closed" value="true" />
+      <created>1711320799842</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1711320799843</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Started encryption and deployment; I've added a new dir called nginx and added a docerfile, docker compose and conf file with most of the appropriate code in them.">
+      <option name="closed" value="true" />
+      <created>1713290333687</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1713290333687</updated>
+    </task>
+    <task id="LOCAL-00004" summary="idk what these are...">
+      <option name="closed" value="true" />
+      <created>1713646095972</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1713646095972</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Modified the html to look a bit more pretty. Added some css to make the post page unique.">
+      <option name="closed" value="true" />
+      <created>1713649005744</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1713649005744</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Tweaked the size of the &quot;logo&quot; image.">
+      <option name="closed" value="true" />
+      <created>1713668311200</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1713668311200</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Normally I would not do this, as it goes completely against what I've set up for the repo. However, it's 3am so I don't really care. All I've really done here is touch up the chat and some of the formatting of the site.">
+      <option name="closed" value="true" />
+      <created>1713682443186</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1713682443186</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Again I wouldn't normally do this but I'm running out of time; set http -&gt; https in functions.js in hopes that this will make websockets work with https...">
+      <option name="closed" value="true" />
+      <created>1713722534317</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1713722534317</updated>
+    </task>
+    <task id="LOCAL-00009" summary="**THIS IS BAD DON'T DO THIS**&#10;&#10;Quick push to change the ports and have 8080 not be exposed in the dockerfile.">
+      <option name="closed" value="true" />
+      <created>1713722830054</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1713722830054</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Created a non-websocket version of the app to deploy for our demo.">
+      <option name="closed" value="true" />
+      <created>1714019222238</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1714019222238</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fixed up the home page to be less of a placeholder, added a different image and made some changes to the html and js." />
+    <MESSAGE value="A few annoying typos, fixed" />
+    <MESSAGE value="Started encryption and deployment; I've added a new dir called nginx and added a docerfile, docker compose and conf file with most of the appropriate code in them." />
+    <MESSAGE value="idk what these are..." />
+    <MESSAGE value="Modified the html to look a bit more pretty. Added some css to make the post page unique." />
+    <MESSAGE value="Tweaked the size of the &quot;logo&quot; image." />
+    <MESSAGE value="Normally I would not do this, as it goes completely against what I've set up for the repo. However, it's 3am so I don't really care. All I've really done here is touch up the chat and some of the formatting of the site." />
+    <MESSAGE value="Again I wouldn't normally do this but I'm running out of time; set http -&gt; https in functions.js in hopes that this will make websockets work with https..." />
+    <MESSAGE value="**THIS IS BAD DON'T DO THIS**&#10;&#10;Quick push to change the ports and have 8080 not be exposed in the dockerfile." />
+    <MESSAGE value="Created a non-websocket version of the app to deploy for our demo." />
+    <option name="LAST_COMMIT_MESSAGE" value="Created a non-websocket version of the app to deploy for our demo." />
+  </component>
+</project>
