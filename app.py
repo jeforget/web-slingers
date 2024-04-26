@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 app.secret_key = '13513ijnijdsuia7safv'
 
-upload_folder = os.path.join('static', 'profilePics')
+upload_folder = os.path.join('../../Desktop/test_repo 2/static', 'profilePics')
 app.config['UPLOAD'] = upload_folder
 
 # Connect to MongoDB
@@ -144,8 +144,10 @@ def register():
 # post page
 @app.route('/page3', methods=['GET'])
 def page3():
-    all_posts = list(posts_collection.find())
-    return render_template("post.html", posts=all_posts )
+    page_posts = list(posts_collection.find())
+    if page_posts.__len__() > 0:
+        page_posts = list(reversed(page_posts))
+    return render_template("post.html", posts=page_posts)
 
 
 def create_single_post(username, content):
