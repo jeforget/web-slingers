@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7d68a695-09c8-4fea-9e66-7ac8abc43d9e" name="Changes" comment="Created a non-websocket version of the app to deploy for our demo.">
+    <list default="true" id="7d68a695-09c8-4fea-9e66-7ac8abc43d9e" name="Changes" comment="This should be up to date with our deployed version now.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,9 +52,9 @@
       <recent name="$PROJECT_DIR$/static/css" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/static/js" />
       <recent name="$PROJECT_DIR$/templates" />
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/static/images" />
       <recent name="$PROJECT_DIR$/static/profilePics" />
     </key>
@@ -122,7 +123,9 @@
       <workItem from="1714015792045" duration="30000" />
       <workItem from="1714015829025" duration="144000" />
       <workItem from="1714016472807" duration="2465000" />
-      <workItem from="1714162642139" duration="244000" />
+      <workItem from="1714162642139" duration="343000" />
+      <workItem from="1714183105664" duration="25000" />
+      <workItem from="1714402687717" duration="139000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed up the home page to be less of a placeholder, added a different image and made some changes to the html and js.">
       <option name="closed" value="true" />
@@ -204,7 +207,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714019222238</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="This should be up to date with our deployed version now.">
+      <option name="closed" value="true" />
+      <created>1714162915365</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1714162915365</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -221,6 +232,7 @@
     <MESSAGE value="Again I wouldn't normally do this but I'm running out of time; set http -&gt; https in functions.js in hopes that this will make websockets work with https..." />
     <MESSAGE value="**THIS IS BAD DON'T DO THIS**&#10;&#10;Quick push to change the ports and have 8080 not be exposed in the dockerfile." />
     <MESSAGE value="Created a non-websocket version of the app to deploy for our demo." />
-    <option name="LAST_COMMIT_MESSAGE" value="Created a non-websocket version of the app to deploy for our demo." />
+    <MESSAGE value="This should be up to date with our deployed version now." />
+    <option name="LAST_COMMIT_MESSAGE" value="This should be up to date with our deployed version now." />
   </component>
 </project>

@@ -8,12 +8,20 @@ import secrets
 import hashlib
 import os
 from helper_func import validate_password
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 app = Flask(__name__)
 
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["200", "50 per hour"]
+)
+
 app.secret_key = '13513ijnijdsuia7safv'
 
-upload_folder = os.path.join('../../Desktop/test_repo 2/static', 'profilePics')
+upload_folder = os.path.join('static', 'profilePics')
 app.config['UPLOAD'] = upload_folder
 
 # Connect to MongoDB
@@ -30,6 +38,7 @@ posts_collection = db['posts']
 
 
 @app.route('/', methods=['POST', 'GET'])
+@limiter.limit("50 per minute")
 def index():
     # updated to authentication
     auth = request.cookies.get("Auth_token", None)
@@ -60,6 +69,7 @@ def index():
 
 
 @app.route('/page1')
+@limiter.limit("50 per minute")
 def page1():
     return render_template("page1.html")
 
@@ -95,6 +105,7 @@ def login():
 
 
 @app.route('/logout', methods=['POST', 'GET'])
+@limiter.limit("50 per minute")
 def logout():
     session["username"] = None
     session.pop("auth", False)
@@ -105,6 +116,7 @@ def logout():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@limiter.limit("50 per minute")
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -143,11 +155,10 @@ def register():
 
 # post page
 @app.route('/page3', methods=['GET'])
+@limiter.limit("50 per minute")
 def page3():
-    page_posts = list(posts_collection.find())
-    if page_posts.__len__() > 0:
-        page_posts = list(reversed(page_posts))
-    return render_template("post.html", posts=page_posts)
+    all_posts = list(posts_collection.find())
+    return render_template("post.html", posts=all_posts )
 
 
 def create_single_post(username, content):
@@ -165,6 +176,7 @@ def create_single_post(username, content):
 #         flash('Post created successfully!', 'success')
 #     return redirect(url_for('page3'))
 @app.route('/create_post', methods=['POST'])
+@limiter.limit("50 per minute")
 def create_post():
     if 'username' in session and (not session.get("auth", False) == False):
         content = request.form.get('content', '')
@@ -175,6 +187,7 @@ def create_post():
 
 
 @app.route('/like_post', methods=['POST'])
+@limiter.limit("50 per minute")
 # def like_post():
 # post_id = request.form.get('post_id')
 # username = session.get('username')
@@ -187,6 +200,7 @@ def create_post():
 # return jsonify({'result': 'success'})
 
 @app.route('/like_post', methods=['POST'])
+@limiter.limit("50 per minute")
 def like_post():
     post_id = request.form.get('post_id')
     username = session.get('username')
@@ -218,6 +232,7 @@ def like_post():
 
 
 @app.route('/dislike_post', methods=['POST'])
+@limiter.limit("50 per minute")
 def dislike_post():
     post_id = request.form.get('post_id')
     username = session.get('username')
@@ -247,6 +262,7 @@ def dislike_post():
         return jsonify({'message': 'Could not dislike the post.'}), 500
 
 @app.route('/logged_in', methods=['POST'])
+@limiter.limit("50 per minute")
 def profile_photo():
     if request.method == 'POST':
         username = session.get("username", None)
