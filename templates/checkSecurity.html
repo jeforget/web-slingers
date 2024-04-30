@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Registration Page</h1>
-     {% with messages = get_flashed_messages(with_categories=true) %}
+    <h1>Verify Page</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
                 <div class="flash-{{ category }}">
@@ -16,23 +17,23 @@
         {% endif %}
     {% endwith %}
 
-    <form style="text-align: center" id="register-form" action="{{ url_for('register') }}" method="post">
+    <form style="text-align: center"  id="change-password-form" action="{{ url_for('verify') }}" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <label for="password">Retype Password:</label>
-        <input type="password" id="password_2" name="password_2" required><br>
 
         <label for="security1">What was your first pet's name?</label>
         <input type="text" id="security1" name="security1" required><br>
         <label for="security2">In what city or town did your mother and father meet?</label>
         <input type="text" id="security2" name="security2" required><br>
 
-        <input type="submit" value="Register">
+        <label for="password_1">Password:</label>
+        <input type="password" id="password_1" name="password_1" required><br>
+        <label for="password_2">Retype Password:</label>
+        <input type="password" id="password_2" name="password_2" required><br>
+
+        <input type="submit" value="Verify and Change">
     </form>
     <br/>
     <a href="{{ url_for('index') }}">Back to Home</a>
     <br/>
 {% endblock %}
-
