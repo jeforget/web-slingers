@@ -14,9 +14,9 @@ from flask_limiter.util import get_remote_address
 app = Flask(__name__)
 
 limiter = Limiter(
-    app,
+    app=app,
     key_func=get_remote_address,
-    default_limits=["200", "50 per hour"]
+    default_limits=["50 per 10 seconds"]
 )
 
 app.secret_key = '13513ijnijdsuia7safv'
@@ -38,7 +38,7 @@ posts_collection = db['posts']
 
 
 @app.route('/', methods=['POST', 'GET'])
-@limiter.limit("50 per minute")
+@limiter.limit("50 per 10 seconds")
 def index():
     # updated to authentication
     auth = request.cookies.get("Auth_token", None)
@@ -69,7 +69,7 @@ def index():
 
 
 @app.route('/page1')
-@limiter.limit("50 per minute")
+@limiter.limit("50 per 10 seconds")
 def page1():
     return render_template("page1.html")
 
@@ -105,7 +105,7 @@ def login():
 
 
 @app.route('/logout', methods=['POST', 'GET'])
-@limiter.limit("50 per minute")
+@limiter.limit("50 per 10 seconds")
 def logout():
     session["username"] = None
     session.pop("auth", False)
@@ -116,7 +116,7 @@ def logout():
 
 
 @app.route('/register', methods=['GET', 'POST'])
-@limiter.limit("50 per minute")
+@limiter.limit("50 per 10 seconds")
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -155,7 +155,7 @@ def register():
 
 # post page
 @app.route('/page3', methods=['GET'])
-@limiter.limit("50 per minute")
+@limiter.limit("50 per 10 seconds")
 def page3():
     all_posts = list(posts_collection.find())
     return render_template("post.html", posts=all_posts )
@@ -176,7 +176,7 @@ def create_single_post(username, content):
 #         flash('Post created successfully!', 'success')
 #     return redirect(url_for('page3'))
 @app.route('/create_post', methods=['POST'])
-@limiter.limit("50 per minute")
+@limiter.limit("50 per 10 seconds")
 def create_post():
     if 'username' in session and (not session.get("auth", False) == False):
         content = request.form.get('content', '')
@@ -186,8 +186,8 @@ def create_post():
     return redirect(url_for('page3'))
 
 
-@app.route('/like_post', methods=['POST'])
-@limiter.limit("50 per minute")
+# @app.route('/like_post', methods=['POST'])
+# @limiter.limit("50 per 10 seconds")
 # def like_post():
 # post_id = request.form.get('post_id')
 # username = session.get('username')
@@ -200,7 +200,7 @@ def create_post():
 # return jsonify({'result': 'success'})
 
 @app.route('/like_post', methods=['POST'])
-@limiter.limit("50 per minute")
+@limiter.limit("50 per 10 seconds")
 def like_post():
     post_id = request.form.get('post_id')
     username = session.get('username')
@@ -232,7 +232,7 @@ def like_post():
 
 
 @app.route('/dislike_post', methods=['POST'])
-@limiter.limit("50 per minute")
+@limiter.limit("50 per 10 seconds")
 def dislike_post():
     post_id = request.form.get('post_id')
     username = session.get('username')
@@ -262,7 +262,7 @@ def dislike_post():
         return jsonify({'message': 'Could not dislike the post.'}), 500
 
 @app.route('/logged_in', methods=['POST'])
-@limiter.limit("50 per minute")
+@limiter.limit("50 per 10 seconds")
 def profile_photo():
     if request.method == 'POST':
         username = session.get("username", None)
