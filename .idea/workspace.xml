@@ -4,15 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7d68a695-09c8-4fea-9e66-7ac8abc43d9e" name="Changes" comment="This should be up to date with our deployed version now.">
+    <list default="true" id="7d68a695-09c8-4fea-9e66-7ac8abc43d9e" name="Changes" comment="Attempted to add in limiting using flask">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -89,7 +99,7 @@
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -125,7 +135,10 @@
       <workItem from="1714016472807" duration="2465000" />
       <workItem from="1714162642139" duration="343000" />
       <workItem from="1714183105664" duration="25000" />
-      <workItem from="1714402687717" duration="139000" />
+      <workItem from="1714402687717" duration="179000" />
+      <workItem from="1714740395296" duration="153000" />
+      <workItem from="1714741258947" duration="902000" />
+      <workItem from="1714743616014" duration="52000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed up the home page to be less of a placeholder, added a different image and made some changes to the html and js.">
       <option name="closed" value="true" />
@@ -215,7 +228,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714162915365</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Attempted to add in limiting using flask">
+      <option name="closed" value="true" />
+      <created>1714402863606</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1714402863606</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -233,6 +254,7 @@
     <MESSAGE value="**THIS IS BAD DON'T DO THIS**&#10;&#10;Quick push to change the ports and have 8080 not be exposed in the dockerfile." />
     <MESSAGE value="Created a non-websocket version of the app to deploy for our demo." />
     <MESSAGE value="This should be up to date with our deployed version now." />
-    <option name="LAST_COMMIT_MESSAGE" value="This should be up to date with our deployed version now." />
+    <MESSAGE value="Attempted to add in limiting using flask" />
+    <option name="LAST_COMMIT_MESSAGE" value="Attempted to add in limiting using flask" />
   </component>
 </project>

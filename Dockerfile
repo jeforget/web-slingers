@@ -1,7 +1,7 @@
 FROM python:3.8
 ENV HOME /root
 WORKDIR /root
-COPY ../../Desktop/backups .
+COPY . .
 RUN pip install flask
 RUN pip install Flask-Limiter
 RUN pip install --no-cache-dir -r requirements.txt
