@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block head %}
-
 <title>PostBoard Home</title>
 <link rel="shortcut icon" href="{{ url_for('static', filename='nova_eye.png') }}">
-
+<script src="https://cdn.socket.io/socket.io-3.1.3.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -20,14 +20,30 @@
 </div>
 <br>
 <div style="text-align: center" class="row">
-
     <h1>Welcome, Guest</h1>
-
 </div>
 <br>
-
 <div style="text-align: center"; class="image_div">
     <br>
     <image src="{{ url_for('static', filename='images/nova-approved.png')}}" alt="Nova approved" style="width:550px;height:400px;"></image>
 </div>
+<div id="user-activities"></div>
+
+<script>
+    const socket = io.connect(window.location.origin);
+
+    document.onmousemove = _.throttle(() => {
+        socket.emit('activity', { status: 'active' });
+    }, 1000);
+
+    socket.on('user_time_update', function(data) {
+        let userDiv = $('#user-' + data.username);
+        if (userDiv.length === 0) {
+            $('#user-activities').append(`<div id="user-${data.username}">${data.username} - Active: ${data.active_time}s, Inactive: ${data.inactive_time}s</div>`);
+        } else {
+            userDiv.html(`${data.username} - Active: ${data.active_time}s, Inactive: ${data.inactive_time}s`);
+        }
+    });
+</script>
+
 {% endblock %}
