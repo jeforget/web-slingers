@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7d68a695-09c8-4fea-9e66-7ac8abc43d9e" name="Changes" comment="Attempted to add in limiting using flask">
+    <list default="true" id="7d68a695-09c8-4fea-9e66-7ac8abc43d9e" name="Changes" comment="For some reason the copy path was some random directory for the Dockerfile, not sure how that happened...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +138,8 @@
       <workItem from="1714402687717" duration="179000" />
       <workItem from="1714740395296" duration="153000" />
       <workItem from="1714741258947" duration="902000" />
-      <workItem from="1714743616014" duration="52000" />
+      <workItem from="1714743616014" duration="210000" />
+      <workItem from="1714928379809" duration="15000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed up the home page to be less of a placeholder, added a different image and made some changes to the html and js.">
       <option name="closed" value="true" />
@@ -236,7 +237,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714402863606</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="For some reason the copy path was some random directory for the Dockerfile, not sure how that happened...">
+      <option name="closed" value="true" />
+      <created>1714743754560</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1714743754561</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -255,6 +264,7 @@
     <MESSAGE value="Created a non-websocket version of the app to deploy for our demo." />
     <MESSAGE value="This should be up to date with our deployed version now." />
     <MESSAGE value="Attempted to add in limiting using flask" />
-    <option name="LAST_COMMIT_MESSAGE" value="Attempted to add in limiting using flask" />
+    <MESSAGE value="For some reason the copy path was some random directory for the Dockerfile, not sure how that happened..." />
+    <option name="LAST_COMMIT_MESSAGE" value="For some reason the copy path was some random directory for the Dockerfile, not sure how that happened..." />
   </component>
 </project>

@@ -16,6 +16,7 @@ app = Flask(__name__)
 limiter = Limiter(
     app=app,
     key_func=get_remote_address,
+    meta_limits=["1 per 30 seconds"],
     default_limits=["50 per 10 seconds"]
 )
 
@@ -38,7 +39,7 @@ posts_collection = db['posts']
 
 
 @app.route('/', methods=['POST', 'GET'])
-@limiter.limit("50 per 10 seconds")
+@limiter.limit("50 per 10 seconds", cost=4)
 def index():
     # updated to authentication
     auth = request.cookies.get("Auth_token", None)
@@ -69,12 +70,13 @@ def index():
 
 
 @app.route('/page1')
-@limiter.limit("50 per 10 seconds")
+@limiter.limit("50 per 10 seconds", cost=4)
 def page1():
     return render_template("page1.html")
 
 
 @app.route('/login', methods=['POST', 'GET'])
+@limiter.limit("50 per 10 seconds", cost=4)
 def login():
     if request.method == 'POST':
         username = request.form['username_login']
@@ -116,7 +118,7 @@ def logout():
 
 
 @app.route('/register', methods=['GET', 'POST'])
-@limiter.limit("50 per 10 seconds")
+@limiter.limit("50 per 10 seconds", cost=3)
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -155,7 +157,7 @@ def register():
 
 # post page
 @app.route('/page3', methods=['GET'])
-@limiter.limit("50 per 10 seconds")
+@limiter.limit("50 per 10 seconds", cost=6)
 def page3():
     all_posts = list(posts_collection.find())
     return render_template("post.html", posts=all_posts )
