@@ -118,4 +118,3 @@ socket.on('dislike_response', function(data) {
         alert('An error occurred: ' + data.message);
     });
 });
-

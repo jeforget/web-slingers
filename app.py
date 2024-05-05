@@ -115,6 +115,9 @@ def register():
         username = request.form['username']
         password = request.form['password']
         password_2 = request.form['password_2']
+        security1 = request.form['security1']
+        security2 = request.form['security2']
+
         if password != password_2:
             flash('Password did not match', 'error')
             return redirect(url_for('register'))
@@ -136,13 +139,49 @@ def register():
         user_data = {
             'username': username,
             'hash_password': hashed_password,
-            'salt': salt
+            'salt': salt,
+            'security1': security1,
+            'security2': security2
         }
 
         collection.insert_one(user_data)
         flash('Registration successful!', 'success')
         return redirect(url_for('index'))
     return render_template('register.html')
+
+@app.route('/verify', methods=['GET', 'POST'])
+def verify():
+    if request.method == 'POST':
+        username = request.form['username']
+        security1 = request.form['security1']
+        security2 = request.form['security2']
+        password_1 = request.form['password_1']
+        password_2 = request.form['password_2']
+
+        if password_1 != password_2:
+            flash('Password did not match', 'error')
+            return redirect(url_for('verify'))
+
+        is_valid_password, password_message = validate_password(password_1)
+        if not is_valid_password:
+            flash(password_message, 'error')
+            return redirect(url_for('verify'))
+
+        my_data = collection.find_one({"username": username})
+        if my_data is None:
+            flash("Username does not exist!", "error")
+            return redirect(url_for('verify'))
+
+        if not (my_data["security1"] == security1 and my_data["security2"] == security2):
+            flash("No match", "error")
+            return redirect(url_for('verify'))
+
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password_1.encode('utf-8'), salt)
+
+        collection.update_one({"username": username}, {"$set": {"hash_password": hashed_password}})
+        return redirect(url_for('login'))
+    return render_template('checkSecurity.html')
 
 
 socketio = SocketIO(app)

@@ -16,13 +16,19 @@
         {% endif %}
     {% endwith %}
 
-    <form id="register-form" action="{{ url_for('register') }}" method="post">
+    <form style="text-align: center" id="register-form" action="{{ url_for('register') }}" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br>
         <label for="password">Retype Password:</label>
         <input type="password" id="password_2" name="password_2" required><br>
+
+        <label for="security1">What was your first pet's name?</label>
+        <input type="text" id="security1" name="security1" required><br>
+        <label for="security2">In what city or town did your mother and father meet?</label>
+        <input type="text" id="security2" name="security2" required><br>
+
         <input type="submit" value="Register">
     </form>
     <br/>
