@@ -164,7 +164,7 @@ def verify():
 
         is_valid_password, password_message = validate_password(password_1)
         if not is_valid_password:
-            flash(password_message, 'error')
+            flash('Invalid password', 'error')
             return redirect(url_for('verify'))
 
         my_data = collection.find_one({"username": username})

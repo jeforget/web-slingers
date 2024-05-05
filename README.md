@@ -1,3 +1,18 @@
+# Additional functionality
+We have added the additional feature of password reset. As users, there is a high chance that we might not remember the password to our account. 
+Well fret not, because this feature allows you to change your password as long as you have the answers to the security questions asked during registration.
+
+Testing Procedure:
+1. Start your server using docker compose up
+2. Navigate to http://localhost:8080/
+3. Register an account and save the answers to the security questions
+4. Go to the Login Page and then click on Forgot Password?
+5. Attempt to change the password using the registered username and passwords that do not match. Ensure that a message stating that the passwords do not match is displayed.
+6. Attempt to change the password with the registered username and incorrect answers to security questions. Ensure that a message stating that there is no match.
+7. Then change the password using the registered username and correct answers to the security questions. Ensure that you are redirected to the login page.
+8. Login using the username and the new password. 
+9. Ensure that you are redirected to the Logged_in page and you can now post.
+
 # A note to whoever is grading this:
 We sadly could not get https working with websockets, and have two (same IP just one is HTTP and one is HTTPS) "deployed" versions.
 
