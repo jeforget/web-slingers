@@ -111,7 +111,26 @@ socket.on('dislike_response', function(data) {
 //         }
 //     }
 // });
+    document.onmousemove = _.throttle(() => {
+        let currentTime = Date.now();
+        if (currentTime - lastActivityTime > 1000) {
+            socket.emit('activity', { status: 'active' });
+            lastActivityTime = currentTime;
+        }
+    }, 1000);
 
+    socket.on('user_time_update', function(data) {
+        let userID = $('#user-' + data.username);
+        if (userID.length === 0) {
+            $('body').append(`<div id="user-${data.username}">${data.username} - Active: ${data.active_time}s, Inactive: ${data.inactive_time}s</div>`);
+        } else {
+            userID.html(`${data.username} - Active: ${data.active_time}s, Inactive: ${data.inactive_time}s`);
+        }
+    });
+
+    socket.on('connect', function() {
+        console.log('WebSocket connected!');
+    });
 
     socket.on('error', function(data) {
         console.error('Socket error:', data.message);
