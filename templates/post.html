@@ -5,13 +5,14 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/post_style.css') }}">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/functions.js') }}"></script>
 {% endblock %}
 
 {% block body %}
 <div class="post-section">
-    <h1>You must register an account and log in to post content </h1>
-    <a href="{{ url_for('index') }}">Back to Home</a>
-    <br>
+     <h1>You must register an account and log in to post content </h1>
+        <a href="{{ url_for('index') }}">Back to Home</a>
+<br>
     <textarea id="post-content" required placeholder="Say something, make your post here!"></textarea>
     <button id="submit-post">Post</button>
     <div id="message-container" style="display: none;"></div>
@@ -19,35 +20,19 @@
     <h1>Posts</h1>
     <div id="posts-container">
         {% for post in posts %}
-        <div class="post" id="post-{{ post._id }}">
-            <p><img src="{{ url_for('static', filename='profilePics/'+ post.username + 'profile_photo.jpg') }}" alt="Profile Picture" style="height: 50px; width: 50px;"><span><strong>{{ post.username }}</strong> posted: {{ post.content | safe }}</span></p>
+        <div  class="post" id="post-{{ post._id }}">
+        <span>
+
+            <p><img src="{{ url_for('static', filename='profilePics/'+ post.username + 'profile_photo.jpg') }}" alt="Profile Picture" style="height: 50px; width: 50px;"><span><strong> {{ post.username }}</strong> posted: {{ post.content | safe }} </span></p>
             <button class="like-button" data-post-id="{{ post._id }}">Like</button>
             <span id="like-count-{{ post._id }}">{{ post.likes | default(0) }}</span>
             <p>Liked by: <span id="like-users-{{ post._id }}">{{ post.liked_by | join(', ') }}</span></p>
             <button class="dislike-button" data-post-id="{{ post._id }}">Dislike</button>
             <span id="dislike-count-{{ post._id }}">{{ post.dislikes | default(0) }}</span>
             <p>Disliked by: <span id="dislike-users-{{ post._id }}">{{ post.disliked_by | join(', ') }}</span></p>
+        </span>
         </div>
         {% endfor %}
     </div>
 </div>
-<div id="user-activities"></div>
-
-<script>
-    const socket = io.connect(window.location.origin);
-
-    document.onmousemove = _.throttle(() => {
-        socket.emit('activity', { status: 'active' });
-    }, 1000);
-
-    socket.on('user_time_update', function(data) {
-        let userDiv = $('#user-' + data.username);
-        if (userDiv.length === 0) {
-            $('#user-activities').append(`<div id="user-${data.username}">${data.username} - Active: ${data.active_time}s, Inactive: ${data.inactive_time}s</div>`);
-        } else {
-            userDiv.html(`${data.username} - Active: ${data.active_time}s, Inactive: ${data.inactive_time}s`);
-        }
-    });
-</script>
-
 {% endblock %}
