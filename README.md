@@ -14,7 +14,7 @@ Testing Procedure:
 9. Ensure that you are redirected to the Logged_in page and you can now post.
 
 # A sense of time (Project Part 3 Objective 1)
-A time-related feature showing the active and inactive time for a user has been added to the Post page. You must be signed in to use it.
+A time-related feature showing the active and inactive time for a user has been added to the Post page. You must be signed in to use it. Logout should reset the time to 0.
 
 
 # A note to whoever is grading this (Project Part 2):
