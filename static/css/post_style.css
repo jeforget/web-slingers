@@ -35,3 +35,26 @@ body{
     padding: 10px;
     margin-bottom: 10px;
 }
+
+#user-activities {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #00FF00;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+h2, p {
+    margin: 10px 0;
+}
+
+
+#active-time, #inactive-time {
+    font-weight: bold;
+    color: #FFD700;
+    font-size: 1.2em;
+}

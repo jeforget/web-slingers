@@ -9,6 +9,7 @@ import hashlib
 import os
 from helper_func import validate_password
 from flask_socketio import SocketIO, emit
+import threading
 
 app = Flask(__name__)
 
@@ -16,8 +17,6 @@ app.secret_key = '13513ijnijdsuia7safv'
 
 upload_folder = os.path.join('static', 'profilePics')
 app.config['UPLOAD'] = upload_folder
-
-
 
 
 # Connect to MongoDB
@@ -85,7 +84,17 @@ def login():
         if bcrypt.checkpw(password, my_data["hash_password"]):
             auth_token = secrets.token_hex(16)
             hashed_token = hashlib.md5(auth_token.encode()).hexdigest()
-            collection.update_one({"username": username}, {"$set": {"Auth_token": hashed_token}})
+            # collection.update_one({"username": username}, {"$set": {"Auth_token": hashed_token}})
+            collection.update_one(
+                {"username": username},
+                {
+                    "$set": {
+                        "Auth_token": hashed_token,
+                        "active_time": 0,
+                        "inactive_time": 0
+                    }
+                }
+            )
             session["username"] = username
             session["auth"] = True
             session["profile_photo"] = None
@@ -101,6 +110,12 @@ def login():
 
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
+    username = session.get("username")
+    if username:
+        collection.update_one(
+            {'username': username},
+            {'$set': {'active_time': 0, 'inactive_time': 0}}
+        )
     session["username"] = None
     session.pop("auth", False)
     session["profile_photo"] = None
@@ -136,18 +151,28 @@ def register():
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
         # If user does not exist, insert into database
+        # user_data = {
+        #     'username': username,
+        #     'hash_password': hashed_password,
+        #     'salt': salt,
+        #     'security1': security1,
+        #     'security2': security2
+        # }
+        # add active_time and inactive_time init
         user_data = {
             'username': username,
             'hash_password': hashed_password,
             'salt': salt,
             'security1': security1,
-            'security2': security2
+            'security2': security2,
+            'active_time': 0,
+            'inactive_time': 0
         }
-
         collection.insert_one(user_data)
         flash('Registration successful!', 'success')
         return redirect(url_for('index'))
     return render_template('register.html')
+
 
 @app.route('/verify', methods=['GET', 'POST'])
 def verify():
@@ -186,6 +211,7 @@ def verify():
 
 socketio = SocketIO(app)
 
+
 # Define WebSockets
 @app.route('/page3', methods=['GET'])
 def page3():
@@ -193,6 +219,7 @@ def page3():
     if page_posts.__len__() > 0:
         page_posts = list(reversed(page_posts))
     return render_template("post.html", posts=page_posts)
+
 
 def create_single_post(username, content):
     post_data = {
@@ -229,7 +256,6 @@ def handle_create_post(raw_data):
     }, broadcast=True)
 
 
-
 @socketio.on('like_post')
 def handle_like_post(data):
     post_id = data.get('post_id')
@@ -252,7 +278,6 @@ def handle_like_post(data):
     # if username in post.get('liked', []):
     #     emit('like_response', {'message': 'You have already liked this post.'}, broadcast=False)
     #     return
-
 
     # update_like = posts_collection.update_one(
     #     {"_id": post_id},
@@ -365,6 +390,32 @@ def profile_photo():
             return render_template('logged_in.html', fileToUpload=image)
         return render_template("index.html")
     return render_template("logged_in.html")
+
+
+@socketio.on('update_activity')
+def handle_activity(data):
+    username = session.get('username')
+    if not username:
+        return
+
+    # current_time = datetime.now()
+    update_time = data['duration'] / 1000
+    # check if it active
+    if data['type'] == 'active':
+        collection.update_one({'username': username}, {
+            '$inc': {'active_time': update_time}
+        })
+        # check if it inactive
+    elif data['type'] == 'inactive':
+        collection.update_one({'username': username}, {
+            '$inc': {'inactive_time': update_time}
+        })
+    # update time
+    user = collection.find_one({'username': username})
+    emit('activity_update', {
+        'active_time': user['active_time'],
+        'inactive_time': user['inactive_time']
+    }, broadcast=True)
 
 
 @app.after_request
