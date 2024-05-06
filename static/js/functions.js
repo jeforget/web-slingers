@@ -2,6 +2,37 @@ $(document).ready(function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']});
 
     console.log('Client script has work.');
+//
+    let l = Date.now();
+    let activityCheckInterval = 1000; // 1 sec
+
+    function update_Activity_Time() {
+        let now = Date.now();
+        let duration = now - l;
+        socket.emit('update_activity', { type: 'active', duration: duration });
+        l = now;
+    }
+
+
+    $(document).mousemove(function() {
+        update_Activity_Time();
+    });
+
+
+    setInterval(function() {
+        let now = Date.now();
+        let inactive_Duration = now - l
+        if (inactive_Duration > activityCheckInterval) {
+            socket.emit('update_activity', { type: 'inactive', duration: inactive_Duration });
+            l = now;
+        }
+    }, activityCheckInterval);
+
+    socket.on('activity_update', function(data) {
+        $('#active-time').text(data.active_time.toFixed(3));
+        $('#inactive-time').text(data.inactive_time.toFixed(3));
+    });
+//
 
     $('#submit-post').on('click', function() {
         var content = $('#post-content').val().trim();
@@ -111,26 +142,7 @@ socket.on('dislike_response', function(data) {
 //         }
 //     }
 // });
-    document.onmousemove = _.throttle(() => {
-        let currentTime = Date.now();
-        if (currentTime - lastActivityTime > 1000) {
-            socket.emit('activity', { status: 'active' });
-            lastActivityTime = currentTime;
-        }
-    }, 1000);
 
-    socket.on('user_time_update', function(data) {
-        let userID = $('#user-' + data.username);
-        if (userID.length === 0) {
-            $('body').append(`<div id="user-${data.username}">${data.username} - Active: ${data.active_time}s, Inactive: ${data.inactive_time}s</div>`);
-        } else {
-            userID.html(`${data.username} - Active: ${data.active_time}s, Inactive: ${data.inactive_time}s`);
-        }
-    });
-
-    socket.on('connect', function() {
-        console.log('WebSocket connected!');
-    });
 
     socket.on('error', function(data) {
         console.error('Socket error:', data.message);
